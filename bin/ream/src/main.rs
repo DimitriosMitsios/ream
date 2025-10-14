@@ -96,10 +96,11 @@ fn main() {
     }
 
     let ream_db = ReamDB::new(ream_dir.clone()).expect("unable to init Ream Database");
+    let proof_gen = cli.proof_gen;
 
     match cli.command {
         Commands::LeanNode(config) => {
-            executor_clone.spawn(async move { run_lean_node(*config, executor, ream_db).await });
+            executor_clone.spawn(async move { run_lean_node(*config, executor, ream_db, proof_gen).await });
         }
         Commands::BeaconNode(config) => {
             executor_clone.spawn(async move { run_beacon_node(*config, executor, ream_db).await });
@@ -140,7 +141,7 @@ fn main() {
 /// is used by all services.
 ///
 /// Besides the shared state, each service holds the channels to communicate with each other.
-pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_db: ReamDB) {
+pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_db: ReamDB, proof_gen: bool) {
     info!("starting up lean node...");
 
     // Initialize prometheus metrics
@@ -216,7 +217,7 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
     let keystores = load_validator_registry(&config.validator_registry_path, &config.node_id)
         .expect("Failed to load validator registry");
     let validator_service =
-        LeanValidatorService::new(lean_chain_reader.clone(), keystores, chain_sender).await;
+        LeanValidatorService::new(lean_chain_reader.clone(), keystores, chain_sender, proof_gen).await;
 
     let server_config = LeanRpcServerConfig::new(
         config.http_address,
