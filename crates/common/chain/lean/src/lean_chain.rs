@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::Arc};
 use alloy_primitives::{B256, FixedBytes};
 use anyhow::anyhow;
 use ream_consensus_lean::{
-    block::{Block, BlockBody, SignedBlock},
+    block::{Block, BlockBody, ProofBlock, SignedBlock, Proof},
     checkpoint::Checkpoint,
     is_justifiable_slot,
     state::LeanState,
@@ -19,6 +19,11 @@ use ream_storage::{
 use ream_sync::rwlock::{Reader, Writer};
 use tokio::sync::Mutex;
 use tree_hash::TreeHash;
+
+#[cfg(feature = "risc0")]
+use methods::{CONSENSUS_STF_ELF, CONSENSUS_STF_ID};
+#[cfg(feature = "risc0")]
+use risc0_zkvm::{default_prover, ExecutorEnv, ProverOpts};
 
 pub type LeanChainWriter = Writer<LeanChain>;
 pub type LeanChainReader = Reader<LeanChain>;
@@ -320,6 +325,110 @@ impl LeanChain {
         stop_timer(compute_state_root_timer);
 
         Ok(new_block.message)
+    }
+
+    #[cfg(feature = "risc0")]
+    pub async fn propose_proof_block(&mut self, slot: u64) -> anyhow::Result<ProofBlock> {
+        let head = self.get_proposal_head().await?;
+
+        let initialize_block_timer = start_timer_vec(&PROPOSE_BLOCK_TIME, &["initialize_block"]);
+
+        let (lean_state_provider, latest_known_votes_provider) = {
+            let db = self.store.lock().await;
+            (db.lean_state_provider(), db.latest_known_votes_provider())
+        };
+
+        let head_state = lean_state_provider
+            .get(head)?
+            .ok_or_else(|| anyhow!("Post state not found for head: {head}"))?;
+
+        let mut new_block = SignedBlock {
+            message: Block {
+                slot,
+                proposer_index: slot % lean_network_spec().num_validators,
+                parent_root: head,
+                // Diverged from Python implementation: Using `B256::ZERO` instead of `None`)
+                state_root: B256::ZERO,
+                body: BlockBody::default(),
+            },
+            signature: FixedBytes::default(),
+        };
+        stop_timer(initialize_block_timer);
+
+        // Clone state so we can apply the new block to get a new state
+        let mut state = head_state.clone();
+
+        //Setup Host environment
+        // Setup the executor environment and inject inputs to guest
+        let env = ExecutorEnv::builder()
+            // Pre-state
+            .write(&state)
+            .unwrap()
+            // Operation input
+            .write(&new_block)
+            .unwrap()
+            // Build the environment
+            .build()
+            .unwrap();
+            //
+        // Prover setup & proving
+        //
+
+        let prover = default_prover();
+        let opts = ProverOpts::succinct();
+    
+        // Apply state transition so the state is brought up to the expected slot
+    
+        let prove_info = prover
+            .prove_with_opts(env, CONSENSUS_STF_ELF, &opts)
+            .unwrap();
+        
+        let proof = prove_info.receipt;
+        let state= prove_info.receipt.journal.decode::<LeanState>().unwrap();
+        // Keep attempt to add valid votes from the list of available votes
+        let add_votes_timer = start_timer_vec(&PROPOSE_BLOCK_TIME, &["add_valid_votes_to_block"]);
+        loop {
+            state.process_attestations(&new_block.message.body.attestations)?;
+            let new_votes_to_add = latest_known_votes_provider
+                .get_all_votes()?
+                .into_iter()
+                .filter_map(|(_, vote)| {
+                    (vote.message.source == state.latest_justified
+                        && !new_block.message.body.attestations.contains(&vote))
+                    .then_some(vote)
+                })
+                .collect::<Vec<_>>();
+
+            if new_votes_to_add.is_empty() {
+                break;
+            }
+
+            for vote in new_votes_to_add {
+                new_block
+                    .message
+                    .body
+                    .attestations
+                    .push(vote)
+                    .map_err(|err| anyhow!("Failed to add vote to new_block: {err:?}"))?;
+            }
+        }
+        stop_timer(add_votes_timer);
+
+        // Update `state.latest_block_header.body_root` so that it accounts for
+        // the votes that we've added above
+        state.latest_block_header.body_root = new_block.message.body.tree_hash_root();
+
+        // Compute the state root
+        let compute_state_root_timer =
+            start_timer_vec(&PROPOSE_BLOCK_TIME, &["compute_state_root"]);
+        new_block.message.state_root = state.tree_hash_root();
+        stop_timer(compute_state_root_timer);
+        let proof = Proof {};
+        let proofblock = ProofBlock {
+            block: new_block.message,
+            proof,
+        };
+        Ok(proofblock)
     }
 
     pub async fn build_vote(&self, slot: u64) -> anyhow::Result<Vote> {

@@ -33,7 +33,19 @@ pub struct Block {
     pub state_root: B256,
     pub body: BlockBody,
 }
+#[derive(
+    Debug, Default, PartialEq, Eq, Clone, Serialize, Deserialize, Encode, Decode, TreeHash,
+)]
+pub struct ProofBlock {
+    pub block: Block,
+    pub proof: Proof,
+}
 
+#[derive(
+    Debug, Default, PartialEq, Eq, Clone, Serialize, Deserialize, Encode, Decode, TreeHash,
+)]
+pub struct Proof {
+}
 /// Represents a block header in the Lean chain.
 ///
 /// See the [Lean specification](https://github.com/leanEthereum/leanSpec/blob/main/docs/client/containers.md#blockheader)

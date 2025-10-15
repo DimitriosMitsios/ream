@@ -261,6 +261,32 @@ impl LeanNetworkService {
                                 );
                             }
                         }
+                        LeanP2PRequest::GossipBlockProof(proof_block) => {
+                            if let Err(err) = self.swarm
+                                .behaviour_mut()
+                                .gossipsub
+                                .publish(
+                                    self.network_config
+                                        .gossipsub_config
+                                        .topics
+                                        .iter()
+                                        .find(|block_proof_topic| matches!(block_proof_topic.kind, LeanGossipTopicKind::BlockProof))
+                                        .map(|block_proof_topic| IdentTopic::from(block_proof_topic.clone()))
+                                        .expect("LeanBlockProof topic configured"),
+                                    proof_block.as_ssz_bytes(),
+                                )
+                            {
+                                warn!(
+                                    slot = proof_block.block.slot,
+                                    error = ?err,
+                                    "Publish block proof failed"
+                                );
+                            } else {
+                                info!(
+                                    slot = proof_block.block.slot,
+                                    "Broadcasted block proof"
+                                );
+                            }
                     }
                 }
 
@@ -345,6 +371,20 @@ impl LeanNetworkService {
                             })
                     {
                         warn!("failed to send vote for slot {slot} to chain: {err:?}");
+                    }
+                }
+                Ok(LeanGossipsubMessage::BlockProof(proof_block)) => {
+                    let slot = proof_block.block.slot;
+
+                    if let Err(err) =
+                        self.chain_message_sender
+                            .send(LeanChainServiceMessage::ProcessBlockProof {
+                                proof_block,
+                                is_trusted: false,
+                                need_gossip: true,
+                            })
+                    {
+                        warn!("failed to send block proof for slot {slot} to chain: {err:?}");
                     }
                 }
                 Err(err) => warn!("gossip decode failed: {err:?}"),
