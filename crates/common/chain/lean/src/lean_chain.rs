@@ -25,6 +25,11 @@ use methods::{CONSENSUS_STF_ELF, CONSENSUS_STF_ID};
 #[cfg(feature = "risc0")]
 use risc0_zkvm::{default_prover, ExecutorEnv, ProverOpts};
 
+#[cfg(feature = "risc0")]
+use methods::{CONSENSUS_STF_ELF, CONSENSUS_STF_ID};
+#[cfg(feature = "risc0")]
+use risc0_zkvm::{default_prover, ExecutorEnv, ProverOpts};
+
 pub type LeanChainWriter = Writer<LeanChain>;
 pub type LeanChainReader = Reader<LeanChain>;
 
