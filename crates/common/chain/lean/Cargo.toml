@@ -27,5 +27,12 @@ ream-network-spec.workspace = true
 ream-storage.workspace = true
 ream-sync.workspace = true
 
+#risc0 dependencies
+methods = { path = "./methods", optional = true }
+risc0-zkvm = { version = "3.0.3", optional = true }
+
+[features]
+risc0 = ["methods", "risc0-zkvm"]
+
 [lints]
 workspace = true
