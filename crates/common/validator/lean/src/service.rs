@@ -80,7 +80,8 @@ impl ValidatorService {
                                     keystore.validator_id,
                                 );
 
-                                if self.proof {
+                                  #[cfg(feature = "risc0")]
+                                  if self.proof {
                                     let (tx, rx) = oneshot::channel();
                                     self.chain_sender
                                         .send(LeanChainServiceMessage::ProduceProofBlock { slot, sender: tx })

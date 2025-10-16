@@ -261,6 +261,7 @@ impl LeanNetworkService {
                                 );
                             }
                         }
+                        #[cfg(feature = "risc0")]
                         LeanP2PRequest::GossipBlockProof(proof_block) => {
                             if let Err(err) = self.swarm
                                 .behaviour_mut()
@@ -287,6 +288,7 @@ impl LeanNetworkService {
                                     "Broadcasted block proof"
                                 );
                             }
+                        }
                     }
                 }
 
@@ -373,6 +375,7 @@ impl LeanNetworkService {
                         warn!("failed to send vote for slot {slot} to chain: {err:?}");
                     }
                 }
+                #[cfg(feature = "risc0")]
                 Ok(LeanGossipsubMessage::BlockProof(proof_block)) => {
                     let slot = proof_block.block.slot;
 

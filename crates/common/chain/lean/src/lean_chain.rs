@@ -358,7 +358,7 @@ impl LeanChain {
         // Clone state so we can apply the new block to get a new state
         let mut state = head_state.clone();
 
-        //Setup Host environment
+        // Setup Host environment
         // Setup the executor environment and inject inputs to guest
         let env = ExecutorEnv::builder()
             // Pre-state
@@ -376,13 +376,13 @@ impl LeanChain {
 
         let prover = default_prover();
         let opts = ProverOpts::succinct();
-    
+
         // Apply state transition so the state is brought up to the expected slot
-    
+
         let prove_info = prover
             .prove_with_opts(env, CONSENSUS_STF_ELF, &opts)
             .unwrap();
-        
+
         let proof = prove_info.receipt;
         let state= prove_info.receipt.journal.decode::<LeanState>().unwrap();
         // Keep attempt to add valid votes from the list of available votes
@@ -424,11 +424,11 @@ impl LeanChain {
         new_block.message.state_root = state.tree_hash_root();
         stop_timer(compute_state_root_timer);
         let proof = Proof {};
-        let proofblock = ProofBlock {
+        let proof_block = ProofBlock {
             block: new_block.message,
             proof,
         };
-        Ok(proofblock)
+        Ok(proof_block)
     }
 
     pub async fn build_vote(&self, slot: u64) -> anyhow::Result<Vote> {
