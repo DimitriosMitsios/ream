@@ -158,32 +158,10 @@ impl LeanChainService {
                             }
                         }
 
-                        LeanChainServiceMessage::ProduceProofBlock { slot:, sender: } => {
-                            if enabled!(Level::DEBUG) {
-                                debug!(
-                                    slot = signed_block.message.slot,
-                                    block_root = ?signed_block.message.tree_hash_root(),
-                                    parent_root = ?signed_block.message.parent_root,
-                                    state_root = ?signed_block.message.state_root,
-                                    attestations_length = signed_block.message.body.attestations.len(),
-                                    "Processing block built by Validator {}",
-                                    signed_block.message.proposer_index,
-                                );
-                            } else {
-                                info!(
-                                    slot = signed_block.message.slot,
-                                    block_root = ?signed_block.message.tree_hash_root(),
-                                    "Processing block built by Validator {}",
-                                    signed_block.message.proposer_index,
-                                );
-                            }
-
-                            if let Err(err) = self.handle_produce_proof_block(signed_block.clone(), is_trusted).await {
-                                warn!("Failed to handle process block message: {err:?}");
-                            }
-
-                            if need_gossip && let Err(err) = self.outbound_gossip.send(LeanP2PRequest::GossipBlockProof(signed_block)) {
-                                warn!("Failed to send item to outbound gossip channel: {err:?}");
+                        #[cfg(feature = "risc0")]
+                        LeanChainServiceMessage::ProduceProofBlock { slot, sender } => {
+                            if let Err(err) = self.handle_produce_proof_block(slot, sender).await {
+                                error!("Failed to handle produce proof block message: {err:?}");
                             }
                         }
                     }
@@ -213,11 +191,11 @@ impl LeanChainService {
         slot: u64,
         response: oneshot::Sender<ProofBlock>,
     ) -> anyhow::Result<()> {
-        let proofblock = self.lean_chain.write().await.propose_proof_block(slot).await?;
+        let proof_block = self.lean_chain.write().await.propose_proof_block(slot).await?;
 
         // Send the produced block back to the requester
         response
-            .send(proofblock)
+            .send(proof_block)
             .map_err(|err| anyhow!("Failed to send produced proof block: {err:?}"))?;
 
         Ok(())
