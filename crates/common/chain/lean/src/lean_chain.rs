@@ -429,11 +429,11 @@ impl LeanChain {
         new_block.message.state_root = state.tree_hash_root();
         stop_timer(compute_state_root_timer);
         let proof = Proof {};
-        let proof_block = BlockProof {
+        let block_proof = BlockProof {
             block: new_block.message,
             proof,
         };
-        Ok(proof_block)
+        Ok(block_proof)
     }
 
     pub async fn build_vote(&self, slot: u64) -> anyhow::Result<Vote> {

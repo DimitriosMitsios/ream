@@ -262,7 +262,7 @@ impl LeanNetworkService {
                             }
                         }
                         #[cfg(feature = "risc0")]
-                        LeanP2PRequest::GossipBlockProof(proof_block) => {
+                        LeanP2PRequest::GossipBlockProof(block_proof) => {
                             if let Err(err) = self.swarm
                                 .behaviour_mut()
                                 .gossipsub
@@ -274,17 +274,17 @@ impl LeanNetworkService {
                                         .find(|block_proof_topic| matches!(block_proof_topic.kind, LeanGossipTopicKind::BlockProof))
                                         .map(|block_proof_topic| IdentTopic::from(block_proof_topic.clone()))
                                         .expect("LeanBlockProof topic configured"),
-                                    proof_block.as_ssz_bytes(),
+                                    block_proof.as_ssz_bytes(),
                                 )
                             {
                                 warn!(
-                                    slot = proof_block.block.slot,
+                                    slot = block_proof.block.slot,
                                     error = ?err,
                                     "Publish block proof failed"
                                 );
                             } else {
                                 info!(
-                                    slot = proof_block.block.slot,
+                                    slot = block_proof.block.slot,
                                     "Broadcasted block proof"
                                 );
                             }
@@ -376,13 +376,13 @@ impl LeanNetworkService {
                     }
                 }
                 #[cfg(feature = "risc0")]
-                Ok(LeanGossipsubMessage::BlockProof(proof_block)) => {
-                    let slot = proof_block.block.slot;
+                Ok(LeanGossipsubMessage::BlockProof(block_proof)) => {
+                    let slot = block_proof.block.slot;
 
                     if let Err(err) =
                         self.chain_message_sender
                             .send(LeanChainServiceMessage::ProcessBlockProof {
-                                proof_block,
+                                block_proof,
                                 is_trusted: false,
                                 need_gossip: true,
                             })
