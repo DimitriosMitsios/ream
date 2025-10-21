@@ -160,7 +160,7 @@ impl LeanChainService {
 
                         #[cfg(feature = "risc0")]
                         LeanChainServiceMessage::ProduceBlockProof { slot, sender, need_gossip } => {
-                            if let Err(err) = self.handle_produce_proof_block(slot, sender).await {
+                            if let Err(err) = self.handle_produce_block_proof(slot, sender).await {
                                 error!("Failed to handle produce proof block message: {err:?}");
                             }
 
@@ -193,16 +193,16 @@ impl LeanChainService {
     }
 
     #[cfg(feature = "risc0")]
-    async fn handle_produce_proof_block(
+    async fn handle_produce_block_proof(
         &mut self,
         slot: u64,
         response: oneshot::Sender<BlockProof>,
     ) -> anyhow::Result<()> {
-        let proof_block = self.lean_chain.write().await.propose_block_proof(slot).await?;
+        let block_proof = self.lean_chain.write().await.propose_block_proof(slot).await?;
 
         // Send the produced block back to the requester
         response
-            .send(proof_block)
+            .send(block_proof)
             .map_err(|err| anyhow!("Failed to send produced proof block: {err:?}"))?;
 
         Ok(())
