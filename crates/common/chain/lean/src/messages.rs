@@ -38,8 +38,9 @@ pub enum LeanChainServiceMessage {
         need_gossip: bool,
     },
    #[cfg(feature = "risc0")]
-    ProduceProofBlock {
+    ProduceBlockProof {
         slot: u64,
         sender: oneshot::Sender<Block>,
+        need_gossip: bool,
     },
 }

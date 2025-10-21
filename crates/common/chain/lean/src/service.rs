@@ -1,6 +1,6 @@
 use anyhow::{Context, anyhow};
 use ream_consensus_lean::{
-    block::{Block, ProofBlock, SignedBlock},
+    block::{Block, BlockProof, SignedBlock},
     vote::SignedVote,
 };
 use ream_network_spec::networks::lean_network_spec;
@@ -159,11 +159,18 @@ impl LeanChainService {
                         }
 
                         #[cfg(feature = "risc0")]
-                        LeanChainServiceMessage::ProduceProofBlock { slot, sender } => {
+                        LeanChainServiceMessage::ProduceBlockProof { slot, sender, need_gossip } => {
                             if let Err(err) = self.handle_produce_proof_block(slot, sender).await {
                                 error!("Failed to handle produce proof block message: {err:?}");
                             }
+
+                            if need_gossip && let Err(err) = self.outbound_gossip.send(LeanP2PRequest::GossipBlockProof(slot)) {
+                                warn!("Failed to send item to outbound gossip channel: {err:?}");
+                            }
                         }
+
+                        #[cfg(feature = "risc0")]
+                        LeanChainServiceMessage::ProcessBlockProof { slot, signed_block_proof, is_trusted } => todo!()
                     }
                 }
             }
@@ -189,9 +196,9 @@ impl LeanChainService {
     async fn handle_produce_proof_block(
         &mut self,
         slot: u64,
-        response: oneshot::Sender<ProofBlock>,
+        response: oneshot::Sender<BlockProof>,
     ) -> anyhow::Result<()> {
-        let proof_block = self.lean_chain.write().await.propose_proof_block(slot).await?;
+        let proof_block = self.lean_chain.write().await.propose_block_proof(slot).await?;
 
         // Send the produced block back to the requester
         response
@@ -219,6 +226,14 @@ impl LeanChainService {
         Ok(())
     }
 
+    async fn handle_process_block_proof(
+        &mut self,
+        block_proof: BlockProof,
+        is_trusted: bool,
+    ) -> anyhow::Result<()> {
+        todo!()
+        }
+
     async fn handle_process_vote(
         &mut self,
         signed_vote: SignedVote,
@@ -235,4 +250,6 @@ impl LeanChainService {
 
         Ok(())
     }
+
+
 }

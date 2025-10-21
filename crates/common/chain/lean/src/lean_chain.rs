@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::Arc};
 use alloy_primitives::{B256, FixedBytes};
 use anyhow::anyhow;
 use ream_consensus_lean::{
-    block::{Block, BlockBody, ProofBlock, SignedBlock, Proof},
+    block::{Block, BlockBody, BlockProof, SignedBlock, Proof},
     checkpoint::Checkpoint,
     is_justifiable_slot,
     state::LeanState,
@@ -333,7 +333,7 @@ impl LeanChain {
     }
 
     #[cfg(feature = "risc0")]
-    pub async fn propose_proof_block(&mut self, slot: u64) -> anyhow::Result<ProofBlock> {
+    pub async fn propose_block_proof(&mut self, slot: u64) -> anyhow::Result<BlockProof> {
         let head = self.get_proposal_head().await?;
 
         let initialize_block_timer = start_timer_vec(&PROPOSE_BLOCK_TIME, &["initialize_block"]);
@@ -429,7 +429,7 @@ impl LeanChain {
         new_block.message.state_root = state.tree_hash_root();
         stop_timer(compute_state_root_timer);
         let proof = Proof {};
-        let proof_block = ProofBlock {
+        let proof_block = BlockProof {
             block: new_block.message,
             proof,
         };
