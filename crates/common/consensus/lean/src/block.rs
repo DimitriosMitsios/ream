@@ -36,7 +36,7 @@ pub struct Block {
 #[derive(
     Debug, Default, PartialEq, Eq, Clone, Serialize, Deserialize, Encode, Decode, TreeHash,
 )]
-pub struct ProofBlock {
+pub struct BlockProof {
     pub block: Block,
     pub proof: Proof,
 }

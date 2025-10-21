@@ -80,11 +80,11 @@ impl ValidatorService {
                                     keystore.validator_id,
                                 );
 
-                                  #[cfg(feature = "risc0")]
-                                  if self.proof {
+                                #[cfg(feature = "risc0")]
+                                if self.proof {
                                     let (tx, rx) = oneshot::channel();
                                     self.chain_sender
-                                        .send(LeanChainServiceMessage::ProduceProofBlock { slot, sender: tx })
+                                        .send(LeanChainServiceMessage::ProduceBlockProof { slot, sender: tx, need_gossip: true })
                                         .expect("Failed to send vote to LeanChainService");
                                 }
                                 // TODO: Sign the block with the keystore.
