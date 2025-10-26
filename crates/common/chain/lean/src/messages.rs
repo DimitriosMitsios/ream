@@ -1,5 +1,5 @@
 use ream_consensus_lean::{
-    block::{Block, SignedBlock},
+    block::{Block, SignedBlock, BlockProof},
     vote::SignedVote,
 };
 use tokio::sync::oneshot;
@@ -40,7 +40,7 @@ pub enum LeanChainServiceMessage {
    #[cfg(feature = "risc0")]
     ProduceBlockProof {
         slot: u64,
-        sender: oneshot::Sender<Block>,
+        sender: oneshot::Sender<BlockProof>,
         need_gossip: bool,
     },
 }
