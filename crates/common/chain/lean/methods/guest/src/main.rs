@@ -5,9 +5,9 @@ use ream_consensus_lean::{
 };
 
 fn main() {
-    let state: LeanState = env::read();
+    let mut state: LeanState = env::read();
     let new_block: SignedBlock = env::read();
     eprintln!("{}:{}: {}", "read-signed-block", "end", env::cycle_count());
-    state.state_transition(&new_block, true, false)?;
+    state.state_transition(&new_block, true, false);
     env::commit(&state);
 }
