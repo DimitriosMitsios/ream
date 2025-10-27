@@ -157,7 +157,8 @@ impl LeanChainService {
                                 warn!("Failed to send item to outbound gossip channel: {err:?}");
                             }
                         }
-
+                        
+                        #[cfg(feature = "risc0")]
                         LeanChainServiceMessage::ProduceBlockProof { slot, sender, need_gossip } => {
                             if let Err(err) = self.handle_produce_proof_block(slot, sender).await {
                                 error!("Failed to handle produce proof block message: {err:?}");
