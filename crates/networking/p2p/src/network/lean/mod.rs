@@ -24,6 +24,8 @@ use ream_executor::ReamExecutor;
 use ssz::Encode;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use tracing::{info, trace, warn};
+#[cfg(feature = "risc0")]
+use bincode;
 
 use super::peer::ConnectionState;
 use crate::{
@@ -263,6 +265,19 @@ impl LeanNetworkService {
                         }
                         #[cfg(feature = "risc0")]
                         LeanP2PRequest::GossipBlockProof(block_proof) => {
+                            // Use bincode for BlockProof since it contains risc0 Receipt
+                            let serialized = match bincode::serde::encode_to_vec(&block_proof, bincode::config::standard()) {
+                                Ok(data) => data,
+                                Err(err) => {
+                                    warn!(
+                                        slot = block_proof.block.slot,
+                                        error = ?err,
+                                        "Failed to serialize block proof"
+                                    );
+                                    continue;
+                                }
+                            };
+
                             if let Err(err) = self.swarm
                                 .behaviour_mut()
                                 .gossipsub
@@ -274,7 +289,7 @@ impl LeanNetworkService {
                                         .find(|block_proof_topic| matches!(block_proof_topic.kind, LeanGossipTopicKind::BlockProof))
                                         .map(|block_proof_topic| IdentTopic::from(block_proof_topic.clone()))
                                         .expect("LeanBlockProof topic configured"),
-                                    block_proof.as_ssz_bytes(),
+                                    serialized,
                                 )
                             {
                                 warn!(
@@ -378,17 +393,11 @@ impl LeanNetworkService {
                 #[cfg(feature = "risc0")]
                 Ok(LeanGossipsubMessage::BlockProof(block_proof)) => {
                     let slot = block_proof.block.slot;
-
-                    if let Err(err) =
-                        self.chain_message_sender
-                            .send(LeanChainServiceMessage::ProcessBlockProof {
-                                block_proof,
-                                is_trusted: false,
-                                need_gossip: true,
-                            })
-                    {
-                        warn!("failed to send block proof for slot {slot} to chain: {err:?}");
-                    }
+                    info!(
+                        slot,
+                        "Received block proof from gossip"
+                    );
+                    // TODO: Verify the proof here
                 }
                 Err(err) => warn!("gossip decode failed: {err:?}"),
             }

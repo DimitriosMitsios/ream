@@ -7,6 +7,8 @@ pub const TOPIC_PREFIX: &str = "leanconsensus";
 pub const ENCODING_POSTFIX: &str = "ssz_snappy";
 pub const LEAN_BLOCK_TOPIC: &str = "block";
 pub const LEAN_VOTE_TOPIC: &str = "vote";
+#[cfg(feature = "risc0")]
+pub const LEAN_BLOCK_PROOF_TOPIC: &str = "block_proof";
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct LeanGossipTopic {
@@ -31,6 +33,8 @@ impl LeanGossipTopic {
         let kind = match topic_parts[2] {
             LEAN_BLOCK_TOPIC => LeanGossipTopicKind::Block,
             LEAN_VOTE_TOPIC => LeanGossipTopicKind::Vote,
+            #[cfg(feature = "risc0")]
+            LEAN_BLOCK_PROOF_TOPIC => LeanGossipTopicKind::BlockProof,
             other => {
                 return Err(GossipsubError::InvalidTopic(format!(
                     "Invalid topic: {other:?}"
@@ -69,6 +73,8 @@ impl From<LeanGossipTopic> for TopicHash {
         let kind_str = match &val.kind {
             Block => LEAN_BLOCK_TOPIC,
             Vote => LEAN_VOTE_TOPIC,
+            #[cfg(feature = "risc0")]
+            BlockProof => LEAN_BLOCK_PROOF_TOPIC,
         };
         TopicHash::from_raw(format!(
             "/{TOPIC_PREFIX}/{}/{kind_str}/{ENCODING_POSTFIX}",
@@ -81,6 +87,8 @@ impl From<LeanGossipTopic> for TopicHash {
 pub enum LeanGossipTopicKind {
     Block,
     Vote,
+    #[cfg(feature = "risc0")]
+    BlockProof,
 }
 
 impl std::fmt::Display for LeanGossipTopicKind {
@@ -88,6 +96,8 @@ impl std::fmt::Display for LeanGossipTopicKind {
         match self {
             LeanGossipTopicKind::Block => write!(f, "{LEAN_BLOCK_TOPIC}"),
             LeanGossipTopicKind::Vote => write!(f, "{LEAN_VOTE_TOPIC}"),
+            #[cfg(feature = "risc0")]
+            LeanGossipTopicKind::BlockProof => write!(f, "{LEAN_BLOCK_PROOF_TOPIC}"),
         }
     }
 }

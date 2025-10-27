@@ -182,16 +182,25 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
         LeanChainService::new(lean_chain_writer, chain_receiver, outbound_p2p_sender).await;
 
     let fork = "devnet0".to_string();
-    let topics: Vec<LeanGossipTopic> = vec![
+    let mut topics: Vec<LeanGossipTopic> = vec![
         LeanGossipTopic {
             fork: fork.clone(),
             kind: LeanGossipTopicKind::Block,
         },
         LeanGossipTopic {
-            fork,
+            fork: fork.clone(),
             kind: LeanGossipTopicKind::Vote,
         },
     ];
+
+    // Add BlockProof topic if risc0 feature is enabled and proof generation is requested
+    #[cfg(feature = "risc0")]
+    if proof_gen {
+        topics.push(LeanGossipTopic {
+            fork,
+            kind: LeanGossipTopicKind::BlockProof,
+        });
+    }
 
     let gossipsub_config = LeanGossipsubConfig {
         topics,

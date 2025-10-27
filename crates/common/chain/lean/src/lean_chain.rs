@@ -384,7 +384,7 @@ impl LeanChain {
             .unwrap();
 
         let mut state= prove_info.receipt.journal.decode::<LeanState>().unwrap();
-        let proof = prove_info.receipt;
+        let receipt = prove_info.receipt;
         // Keep attempt to add valid votes from the list of available votes
         let add_votes_timer = start_timer_vec(&PROPOSE_BLOCK_TIME, &["add_valid_votes_to_block"]);
         loop {
@@ -423,7 +423,11 @@ impl LeanChain {
             start_timer_vec(&PROPOSE_BLOCK_TIME, &["compute_state_root"]);
         new_block.message.state_root = state.tree_hash_root();
         stop_timer(compute_state_root_timer);
-        let proof = Proof {};
+
+        // Create proof with the risc0 receipt
+        let proof = Proof {
+            receipt,
+        };
         let block_proof = BlockProof {
             block: new_block.message,
             proof,
