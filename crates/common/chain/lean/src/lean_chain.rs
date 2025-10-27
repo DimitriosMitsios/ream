@@ -21,7 +21,7 @@ use tokio::sync::Mutex;
 use tree_hash::TreeHash;
 
 #[cfg(feature = "risc0")]
-use methods::{CONSENSUS_STF_ELF, CONSENSUS_STF_ID};
+use methods::{GUEST_CODE_FOR_ZK_PROOF_ELF, GUEST_CODE_FOR_ZK_PROOF_ID};
 #[cfg(feature = "risc0")]
 use risc0_zkvm::{default_prover, ExecutorEnv, ProverOpts};
 
@@ -380,11 +380,11 @@ impl LeanChain {
         // Apply state transition so the state is brought up to the expected slot
 
         let prove_info = prover
-            .prove_with_opts(env, CONSENSUS_STF_ELF, &opts)
+            .prove_with_opts(env, GUEST_CODE_FOR_ZK_PROOF_ELF, &opts)
             .unwrap();
 
+        let mut state= prove_info.receipt.journal.decode::<LeanState>().unwrap();
         let proof = prove_info.receipt;
-        let state= prove_info.receipt.journal.decode::<LeanState>().unwrap();
         // Keep attempt to add valid votes from the list of available votes
         let add_votes_timer = start_timer_vec(&PROPOSE_BLOCK_TIME, &["add_valid_votes_to_block"]);
         loop {
