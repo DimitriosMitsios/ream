@@ -36,7 +36,7 @@ url.workspace = true
 ream-account-manager.workspace = true
 ream-api-types-beacon.workspace = true
 ream-api-types-common.workspace = true
-ream-chain-lean.workspace = true
+ream-chain-lean = { workspace = true, optional = true }
 ream-checkpoint-sync.workspace = true
 ream-consensus-beacon.workspace = true
 ream-consensus-lean.workspace = true
@@ -57,6 +57,9 @@ ream-storage.workspace = true
 ream-sync.workspace = true
 ream-validator-beacon.workspace = true
 ream-validator-lean.workspace = true
+
+[features]
+risc0 = ["ream-chain-lean", "ream-chain-lean/risc0", "ream-p2p/risc0", "ream-validator-lean/risc0"]
 
 [lints]
 workspace = true

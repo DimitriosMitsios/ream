@@ -25,5 +25,8 @@ ream-consensus-misc.workspace = true
 ream-network-spec.workspace = true
 ream-sync.workspace = true
 
+[features]
+risc0 = ["ream-chain-lean/risc0"]
+
 [lints]
 workspace = true

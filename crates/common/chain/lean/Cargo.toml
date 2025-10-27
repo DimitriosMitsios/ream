@@ -32,7 +32,7 @@ methods = { path = "./methods", optional = true }
 risc0-zkvm = { version = "3.0.3", optional = true }
 
 [features]
-risc0 = ["methods", "risc0-zkvm"]
+risc0 = ["methods", "risc0-zkvm", "ream-consensus-lean/risc0"]
 
 [lints]
 workspace = true

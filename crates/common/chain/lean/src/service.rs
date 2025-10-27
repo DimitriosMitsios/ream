@@ -160,8 +160,19 @@ impl LeanChainService {
                         
                         #[cfg(feature = "risc0")]
                         LeanChainServiceMessage::ProduceBlockProof { slot, sender, need_gossip } => {
-                            if let Err(err) = self.handle_produce_proof_block(slot, sender).await {
-                                error!("Failed to handle produce proof block message: {err:?}");
+                            match self.handle_produce_proof_block(slot, sender).await {
+                                Ok(block_proof) => {
+                                    if need_gossip {
+                                        if let Err(err) = self.outbound_gossip.send(LeanP2PRequest::GossipBlockProof(block_proof)) {
+                                            warn!("Failed to gossip block proof for slot {slot}: {err:?}");
+                                        } else {
+                                            info!(slot, "Successfully gossiped block proof");
+                                        }
+                                    }
+                                }
+                                Err(err) => {
+                                    error!("Failed to handle produce proof block message: {err:?}");
+                                }
                             }
                         }
                     }
@@ -190,15 +201,13 @@ impl LeanChainService {
         &mut self,
         slot: u64,
         response: oneshot::Sender<BlockProof>,
-    ) -> anyhow::Result<()> {
-        let proofblock = self.lean_chain.write().await.propose_block_proof(slot).await?;
+    ) -> anyhow::Result<BlockProof> {
+        let block_proof = self.lean_chain.write().await.propose_block_proof(slot).await?;
 
-        // Send the produced block back to the requester
-        response
-            .send(proofblock)
-            .map_err(|err| anyhow!("Failed to send produced proof block: {err:?}"))?;
+        // Send the produced block proof back to the requester (validator service)
+        let _ = response.send(block_proof.clone());
 
-        Ok(())
+        Ok(block_proof)
     }
 
     async fn handle_process_block(
@@ -218,14 +227,6 @@ impl LeanChainService {
 
         Ok(())
     }
-
-    async fn handle_process_block_proof(
-        &mut self,
-        block_proof: BlockProof,
-        is_trusted: bool,
-    ) -> anyhow::Result<()> {
-        todo!()
-        }
 
     async fn handle_process_vote(
         &mut self,

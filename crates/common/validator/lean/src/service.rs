@@ -7,7 +7,7 @@ use ream_chain_lean::{
 use ream_consensus_lean::{block::SignedBlock, vote::SignedVote};
 use ream_network_spec::networks::lean_network_spec;
 use tokio::sync::{mpsc, oneshot};
-use tracing::{Level, debug, enabled, info};
+use tracing::{Level, debug, enabled, info, warn};
 use tree_hash::TreeHash;
 
 use crate::registry::LeanKeystore;
@@ -85,7 +85,19 @@ impl ValidatorService {
                                     let (tx, rx) = oneshot::channel();
                                     self.chain_sender
                                         .send(LeanChainServiceMessage::ProduceBlockProof { slot, sender: tx, need_gossip: true })
-                                        .expect("Failed to send vote to LeanChainService");
+                                        .expect("Failed to send ProduceBlockProof to LeanChainService");
+
+                                    // Wait for proof generation (runs in background)
+                                    // Note: This will block until proof is ready, which may take time
+                                    if let Ok(block_proof) = rx.await {
+                                        info!(
+                                            slot = block_proof.block.slot,
+                                            "Proof generation completed, ready to gossip"
+                                        );
+                                        // TODO: Send to gossip channel when we have access to it
+                                    } else {
+                                        warn!(slot, "Failed to receive generated proof");
+                                    }
                                 }
                                 // TODO: Sign the block with the keystore.
                                 let signed_block = SignedBlock {
