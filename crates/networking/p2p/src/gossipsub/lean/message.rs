@@ -9,18 +9,12 @@ use ssz::Decode;
 use super::topics::{LeanGossipTopic, LeanGossipTopicKind};
 use crate::gossipsub::error::GossipsubError;
 
-#[cfg(not(feature = "risc0"))]
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum LeanGossipsubMessage {
-    Block(SignedBlock),
-    Vote(SignedVote),
-}
-
-#[cfg(feature = "risc0")]
 #[derive(Debug, Clone)]
+#[cfg_attr(not(feature = "risc0"), derive(PartialEq, Eq))]
 pub enum LeanGossipsubMessage {
     Block(SignedBlock),
     Vote(SignedVote),
+    #[cfg(feature = "risc0")]
     BlockProof(BlockProof),
 }
 
