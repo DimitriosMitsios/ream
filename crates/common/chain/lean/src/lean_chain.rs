@@ -383,7 +383,7 @@ impl LeanChain {
             .prove_with_opts(env, GUEST_CODE_FOR_ZK_PROOF_ELF, &opts)
             .unwrap();
 
-        let mut state= prove_info.receipt.journal.decode::<LeanState>().unwrap();
+        let mut state = prove_info.receipt.journal.decode::<LeanState>().unwrap();
         let receipt = prove_info.receipt;
         // Keep attempt to add valid votes from the list of available votes
         let add_votes_timer = start_timer_vec(&PROPOSE_BLOCK_TIME, &["add_valid_votes_to_block"]);
