@@ -423,11 +423,18 @@ impl LeanNetworkService {
                 #[cfg(feature = "risc0")]
                 Ok(LeanGossipsubMessage::BlockProof(block_proof)) => {
                     let slot = block_proof.block.slot;
+                    let proof = block_proof.proof;
+                    let method_id = proof.method_id;
+                    let receipt = proof.receipt;
+                    
                     info!(
                         slot,
                         "Received block proof from gossip"
                     );
-                    // TODO: Verify the proof here
+
+                    println!("Verifying proof for slot {slot}...");
+                    receipt.verify(method_id).unwrap();
+                    info!("Verfication successful. Proof is valid.");// TODO: Verify the proof here
                 }
                 Err(err) => warn!("gossip decode failed: {err:?}"),
             }

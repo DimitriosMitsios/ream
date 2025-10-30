@@ -1,5 +1,6 @@
-use ream_consensus_lean::{block::{SignedBlock, BlockProof}, vote::SignedVote};
-
+use ream_consensus_lean::{block::{SignedBlock}, vote::SignedVote};
+#[cfg(feature="risc0")]
+use ream_consensus_lean::block::BlockProof;
 #[derive(Debug, Clone)]
 pub enum LeanP2PRequest {
     GossipBlock(SignedBlock),

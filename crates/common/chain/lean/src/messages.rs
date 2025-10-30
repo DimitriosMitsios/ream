@@ -1,7 +1,9 @@
 use ream_consensus_lean::{
-    block::{Block, SignedBlock, BlockProof},
+    block::{Block, SignedBlock},
     vote::SignedVote,
 };
+#[cfg(feature="risc0")]
+use ream_consensus_lean::block::BlockProof;
 use tokio::sync::oneshot;
 
 /// Messages that exchange information between the [LeanChainService] and other components.
