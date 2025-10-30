@@ -1,8 +1,10 @@
 use anyhow::{Context, anyhow};
 use ream_consensus_lean::{
-    block::{Block, BlockProof, SignedBlock},
+    block::{Block,SignedBlock},
     vote::SignedVote,
 };
+#[cfg(feature="risc0")]
+use ream_consensus_lean::block::BlockProof;
 use ream_network_spec::networks::lean_network_spec;
 use ream_storage::tables::table::Table;
 use tokio::sync::{mpsc, oneshot};

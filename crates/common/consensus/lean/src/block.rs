@@ -47,6 +47,7 @@ pub struct BlockProof {
 pub struct Proof {
     /// risc0 receipt containing the zkVM proof
     pub receipt: Receipt,
+    pub method_id: [u32; 8],
 }
 /// Represents a block header in the Lean chain.
 ///

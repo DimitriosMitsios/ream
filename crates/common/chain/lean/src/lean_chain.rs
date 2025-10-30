@@ -3,12 +3,14 @@ use std::{collections::HashMap, sync::Arc};
 use alloy_primitives::{B256, FixedBytes};
 use anyhow::anyhow;
 use ream_consensus_lean::{
-    block::{Block, BlockBody, BlockProof, SignedBlock, Proof},
+    block::{Block, BlockBody, SignedBlock},
     checkpoint::Checkpoint,
     is_justifiable_slot,
     state::LeanState,
     vote::{SignedVote, Vote},
 };
+#[cfg(feature="risc0")]
+use ream_consensus_lean::block::{BlockProof, Proof};
 use ream_fork_choice::lean::get_fork_choice_head;
 use ream_metrics::{HEAD_SLOT, PROPOSE_BLOCK_TIME, set_int_gauge_vec, start_timer_vec, stop_timer};
 use ream_network_spec::networks::lean_network_spec;
@@ -427,6 +429,7 @@ impl LeanChain {
         // Create proof with the risc0 receipt
         let proof = Proof {
             receipt,
+            method_id: GUEST_CODE_FOR_ZK_PROOF_ID,
         };
         let block_proof = BlockProof {
             block: new_block.message,
