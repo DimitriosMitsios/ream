@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  node0:
+    image: ream-local:latest
+    platform: linux/amd64
+    container_name: ream-node0
+    environment:
+      - RISC0_DEV_MODE=0
+    command: >
+
+      lean_node
+      --network ephemery
+      --validator-registry-path /config/validator_registry.yml
+      --node-id ream_0
+      --private-key-path /config/node0_key.hex
+      --socket-address 0.0.0.0
+      --socket-port 9000
+      --http-address 0.0.0.0
+      --http-port 5052
+      --metrics
+      --metrics-address 0.0.0.0
+      --metrics-port 8080
+      --bootnodes none
+    volumes:
+      - ./config:/config:ro
+      - node0-data:/data
+    ports:
+      - "9000:9000/udp"
+      - "5052:5052"
+      - "8080:8080"
+    networks:
+      ream-network:
+        ipv4_address: 172.20.0.10
+
+  node1:
+    image: ream-local:latest
+    platform: linux/amd64
+    container_name: ream-node1
+    environment:
+      - RISC0_DEV_MODE=1
+    command: >
+      --proof-gen
+      lean_node
+      --network ephemery
+      --validator-registry-path /config/validator_registry.yml
+      --node-id ream_1
+      --private-key-path /config/node1_key.hex
+      --socket-address 0.0.0.0
+      --socket-port 9000
+      --http-address 0.0.0.0
+      --http-port 5052
+      --metrics
+      --metrics-address 0.0.0.0
+      --metrics-port 8080
+      --bootnodes /ip4/172.20.0.10/udp/9000/quic-v1/p2p/16Uiu2HAmKMRmdX3M7Dc2bxVN4CQXAH9kQHw93ajiyGVqd63LY8kK
+    volumes:
+      - ./config:/config:ro
+      - node1-data:/data
+    ports:
+      - "9001:9000/udp"
+      - "5053:5052"
+      - "8081:8080"
+    networks:
+      ream-network:
+        ipv4_address: 172.20.0.11
+    depends_on:
+      - node0
+
+  node2:
+    image: ream-local:latest
+    platform: linux/amd64
+    container_name: ream-node2
+    environment:
+      - RISC0_DEV_MODE=1
+    command: >
+      --proof-gen
+      lean_node
+      --network ephemery
+      --validator-registry-path /config/validator_registry.yml
+      --node-id ream_2
+      --private-key-path /config/node2_key.hex
+      --socket-address 0.0.0.0
+      --socket-port 9000
+      --http-address 0.0.0.0
+      --http-port 5052
+      --metrics
+      --metrics-address 0.0.0.0
+      --metrics-port 8080
+      --bootnodes /ip4/172.20.0.10/udp/9000/quic-v1/p2p/16Uiu2HAmKMRmdX3M7Dc2bxVN4CQXAH9kQHw93ajiyGVqd63LY8kK
+    volumes:
+      - ./config:/config:ro
+      - node2-data:/data
+    ports:
+      - "9002:9000/udp"
+      - "5054:5052"
+      - "8082:8080"
+    networks:
+      ream-network:
+        ipv4_address: 172.20.0.12
+    depends_on:
+      - node0
+
+  node3:
+    image: ream-local:latest
+    platform: linux/amd64
+    container_name: ream-node3
+    environment:
+      - RISC0_DEV_MODE=1
+    command: >
+      --proof-gen
+      lean_node
+      --network ephemery
+      --validator-registry-path /config/validator_registry.yml
+      --node-id ream_3
+      --private-key-path /config/node3_key.hex
+      --socket-address 0.0.0.0
+      --socket-port 9000
+      --http-address 0.0.0.0
+      --http-port 5052
+      --metrics
+      --metrics-address 0.0.0.0
+      --metrics-port 8080
+      --bootnodes /ip4/172.20.0.10/udp/9000/quic-v1/p2p/16Uiu2HAmKMRmdX3M7Dc2bxVN4CQXAH9kQHw93ajiyGVqd63LY8kK
+    volumes:
+      - ./config:/config:ro
+      - node3-data:/data
+    ports:
+      - "9003:9000/udp"
+      - "5055:5052"
+      - "8083:8080"
+    networks:
+      ream-network:
+        ipv4_address: 172.20.0.13
+    depends_on:
+      - node0
+
+networks:
+  ream-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+volumes:
+  node0-data:
+  node1-data:
+  node2-data:
+  node3-data:

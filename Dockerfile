@@ -8,7 +8,13 @@ LABEL org.opencontainers.image.description="Ream is a modular, open-source Ether
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Install system dependencies
-RUN apt-get update && apt-get -y upgrade && apt-get install -y libclang-dev pkg-config
+RUN apt-get update && apt-get -y upgrade && apt-get install -y libclang-dev pkg-config curl
+
+# Install rzup (risc0 toolchain installer) and risc0 toolchain
+RUN curl -L https://risczero.com/install | bash && \
+    . /root/.bashrc && \
+    rzup install
+ENV PATH="/root/.risc0/bin:/root/.cargo/bin:${PATH}"
 
 # Builds a cargo-chef plan
 FROM chef AS planner
@@ -44,6 +50,17 @@ RUN cp /app/target/$BUILD_PROFILE/ream /app/ream
 # Use Ubuntu as the release image
 FROM ubuntu AS runtime
 WORKDIR /app
+
+# Install runtime dependencies for risc0
+RUN apt-get update && apt-get install -y \
+    libssl-dev \
+    ca-certificates \
+    libstdc++6 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy risc0 toolchain from builder stage (needed for proof generation at runtime)
+COPY --from=builder /root/.risc0 /root/.risc0
+ENV PATH="/root/.risc0/bin:${PATH}"
 
 # Copy ream over from the build stage
 COPY --from=builder /app/ream /usr/local/bin
