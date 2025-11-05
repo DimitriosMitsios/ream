@@ -1,5 +1,5 @@
 [package]
-name = "ream-validator-lean"
+name = "ream-prover-lean"
 authors.workspace = true
 edition.workspace = true
 keywords.workspace = true
@@ -10,26 +10,22 @@ rust-version.workspace = true
 version.workspace = true
 
 [dependencies]
+# External dependencies
 alloy-primitives.workspace = true
 anyhow.workspace = true
-serde.workspace = true
-serde_yaml.workspace = true
 tokio.workspace = true
-tracing = { workspace = true, features = ["log"] }
+tracing.workspace = true
 tree_hash.workspace = true
 
-# ream dependencies
+# Ream dependencies
 ream-chain-lean.workspace = true
 ream-consensus-lean.workspace = true
-ream-consensus-misc.workspace = true
 ream-network-spec.workspace = true
-ream-sync.workspace = true
+ream-storage.workspace = true
 
-# Optional risc0 dependencies
-ream-prover-lean = { workspace = true, optional = true }
-
-[features]
-risc0 = ["ream-prover-lean"]
+# risc0 dependencies
+methods = { path = "./methods" }
+risc0-zkvm = { version = "3.0.3" }
 
 [lints]
 workspace = true

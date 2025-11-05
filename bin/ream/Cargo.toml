@@ -57,5 +57,17 @@ ream-sync.workspace = true
 ream-validator-beacon.workspace = true
 ream-validator-lean.workspace = true
 
+# Optional risc0 dependencies
+ream-prover-lean = { workspace = true, optional = true }
+
+[features]
+risc0 = [
+    "ream-prover-lean",
+    "ream-p2p/risc0",
+    "ream-validator-lean/risc0",
+    "ream-chain-lean/risc0",
+    "ream-consensus-lean/risc0",
+]
+
 [lints]
 workspace = true

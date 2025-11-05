@@ -65,6 +65,10 @@ use ream_validator_beacon::{
 use ream_validator_lean::{
     registry::load_validator_registry, service::ValidatorService as LeanValidatorService,
 };
+#[cfg(feature = "risc0")]
+use ream_prover_lean::{
+    messages::LeanProverServiceMessage, service::LeanProverService,
+};
 use tokio::{sync::mpsc, time::Instant};
 use tracing::{error, info};
 use tracing_subscriber::EnvFilter;
@@ -178,19 +182,28 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
     let (outbound_p2p_sender, outbound_p2p_receiver) = mpsc::unbounded_channel::<LeanP2PRequest>();
 
     let chain_service =
-        LeanChainService::new(lean_chain_writer, chain_receiver, outbound_p2p_sender).await;
+        LeanChainService::new(lean_chain_writer, chain_receiver, outbound_p2p_sender.clone()).await;
 
     let fork = "devnet0".to_string();
-    let topics: Vec<LeanGossipTopic> = vec![
+    let mut topics: Vec<LeanGossipTopic> = vec![
         LeanGossipTopic {
             fork: fork.clone(),
             kind: LeanGossipTopicKind::Block,
         },
         LeanGossipTopic {
-            fork,
+            fork: fork.clone(),
             kind: LeanGossipTopicKind::Vote,
         },
     ];
+
+    // Add BlockProof topic if risc0 is enabled
+    #[cfg(feature = "risc0")]
+    if config.proof_gen {
+        topics.push(LeanGossipTopic {
+            fork,
+            kind: LeanGossipTopicKind::BlockProof,
+        });
+    }
 
     let gossipsub_config = LeanGossipsubConfig {
         topics,
@@ -213,10 +226,32 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
 
     let peer_table = network_service.peer_table();
 
+    // Initialize ProverService if risc0 is enabled
+    #[cfg(feature = "risc0")]
+    let (prover_sender, prover_service_opt) = if config.proof_gen {
+        let (prover_sender, prover_receiver) = mpsc::unbounded_channel::<LeanProverServiceMessage>();
+        let prover_service = LeanProverService::new(
+            lean_chain_reader.clone(),
+            prover_receiver,
+            outbound_p2p_sender.clone(),
+        );
+        (Some(prover_sender), Some(prover_service))
+    } else {
+        (None, None)
+    };
+
     let keystores = load_validator_registry(&config.validator_registry_path, &config.node_id)
         .expect("Failed to load validator registry");
-    let validator_service =
-        LeanValidatorService::new(lean_chain_reader.clone(), keystores, chain_sender).await;
+    let validator_service = LeanValidatorService::new(
+        lean_chain_reader.clone(),
+        keystores,
+        chain_sender,
+        #[cfg(feature = "risc0")]
+        prover_sender,
+        #[cfg(feature = "risc0")]
+        config.proof_gen,
+    )
+    .await;
 
     let server_config = LeanRpcServerConfig::new(
         config.http_address,
@@ -240,10 +275,59 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
             panic!("Validator service exited with error: {err:?}");
         }
     });
+
+    #[cfg(feature = "risc0")]
+    let prover_future_opt = if let Some(prover_service) = prover_service_opt {
+        Some(executor.spawn(async move {
+            if let Err(err) = prover_service.start().await {
+                panic!("Prover service exited with error: {err:?}");
+            }
+        }))
+    } else {
+        None
+    };
+
     let http_future = executor.spawn(async move {
         start_lean_server(server_config, lean_chain_reader, peer_table).await
     });
 
+    #[cfg(feature = "risc0")]
+    if let Some(prover_future) = prover_future_opt {
+        tokio::select! {
+            _ = chain_future => {
+                info!("Chain service has stopped unexpectedly");
+            }
+            _ = network_future => {
+                info!("Network service has stopped unexpectedly");
+            }
+            _ = validator_future => {
+                info!("Validator service has stopped unexpectedly");
+            }
+            _ = prover_future => {
+                info!("Prover service has stopped unexpectedly");
+            }
+            _ = http_future => {
+                info!("RPC service has stopped unexpectedly");
+            }
+        }
+    } else {
+        tokio::select! {
+            _ = chain_future => {
+                info!("Chain service has stopped unexpectedly");
+            }
+            _ = network_future => {
+                info!("Network service has stopped unexpectedly");
+            }
+            _ = validator_future => {
+                info!("Validator service has stopped unexpectedly");
+            }
+            _ = http_future => {
+                info!("RPC service has stopped unexpectedly");
+            }
+        }
+    }
+
+    #[cfg(not(feature = "risc0"))]
     tokio::select! {
         _ = chain_future => {
             info!("Chain service has stopped unexpectedly");

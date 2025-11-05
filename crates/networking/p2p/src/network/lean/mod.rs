@@ -24,6 +24,10 @@ use ream_executor::ReamExecutor;
 use ssz::Encode;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use tracing::{info, trace, warn};
+#[cfg(feature = "risc0")]
+use tracing::error;
+#[cfg(feature = "risc0")]
+use bincode;
 
 use super::peer::ConnectionState;
 use crate::{
@@ -261,6 +265,48 @@ impl LeanNetworkService {
                                 );
                             }
                         }
+                        #[cfg(feature = "risc0")]
+                        LeanP2PRequest::GossipBlockProof(block_proof) => {
+                            let slot = block_proof.block.slot;
+
+                            // Serialize using bincode
+                            match bincode::serde::encode_to_vec(&block_proof, bincode::config::standard()) {
+                                Ok(encoded_data) => {
+                                    if let Err(err) = self.swarm
+                                        .behaviour_mut()
+                                        .gossipsub
+                                        .publish(
+                                            self.network_config
+                                                .gossipsub_config
+                                                .topics
+                                                .iter()
+                                                .find(|topic| matches!(topic.kind, LeanGossipTopicKind::BlockProof))
+                                                .map(|topic| IdentTopic::from(topic.clone()))
+                                                .expect("LeanBlockProof topic configured"),
+                                            encoded_data,
+                                        )
+                                    {
+                                        warn!(
+                                            slot = slot,
+                                            error = ?err,
+                                            "Publish block proof failed"
+                                        );
+                                    } else {
+                                        info!(
+                                            slot = slot,
+                                            "Broadcasted block proof"
+                                        );
+                                    }
+                                }
+                                Err(err) => {
+                                    warn!(
+                                        slot = slot,
+                                        error = ?err,
+                                        "Failed to encode block proof"
+                                    );
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -345,6 +391,21 @@ impl LeanNetworkService {
                             })
                     {
                         warn!("failed to send vote for slot {slot} to chain: {err:?}");
+                    }
+                }
+                #[cfg(feature = "risc0")]
+                Ok(LeanGossipsubMessage::BlockProof(block_proof)) => {
+                    let slot = block_proof.block.slot;
+                    info!("Received BlockProof for slot {}", slot);
+
+                    // Verify the proof
+                    match block_proof.proof.receipt.verify(block_proof.proof.method_id) {
+                        Ok(_) => {
+                            info!("Verification successful for slot {}. Proof is valid.", slot);
+                        }
+                        Err(err) => {
+                            error!("Proof verification failed for slot {}: {:?}", slot, err);
+                        }
                     }
                 }
                 Err(err) => warn!("gossip decode failed: {err:?}"),

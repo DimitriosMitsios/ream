@@ -65,4 +65,8 @@ pub struct LeanNodeConfig {
 
     #[arg(long, help = "Set metrics port", default_value_t = DEFAULT_METRICS_PORT)]
     pub metrics_port: u16,
+
+    #[cfg(feature = "risc0")]
+    #[arg(long, help = "Enable zero-knowledge proof generation for blocks")]
+    pub proof_gen: bool,
 }

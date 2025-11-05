@@ -4,6 +4,8 @@ use ssz_derive::{Decode, Encode};
 use ssz_types::{VariableList, typenum::U4096};
 use tree_hash::TreeHash;
 use tree_hash_derive::TreeHash;
+#[cfg(feature = "risc0")]
+use risc0_zkvm::Receipt;
 
 use crate::vote::SignedVote;
 
@@ -32,6 +34,21 @@ pub struct Block {
     // Diverged from Python implementation: Disallow `None` (uses `B256::ZERO` instead)
     pub state_root: B256,
     pub body: BlockBody,
+}
+
+#[cfg(feature = "risc0")]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BlockProof {
+    pub block: Block,
+    pub proof: Proof,
+}
+
+#[cfg(feature = "risc0")]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Proof {
+    /// risc0 receipt containing the zkVM proof
+    pub receipt: Receipt,
+    pub method_id: [u32; 8],
 }
 
 /// Represents a block header in the Lean chain.
