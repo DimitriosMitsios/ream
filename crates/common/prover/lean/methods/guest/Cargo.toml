@@ -7,8 +7,8 @@ edition = "2021"
 
 
 [dependencies]
-risc0-zkvm = { version = "3.0.3", default-features = false, features = ['std'] }
 ream-consensus-lean = { path = "../../../../../common/consensus/lean" }
+ere-platform-sp1 = { git = "https://github.com/eth-act/ere.git" }
 
 [patch.crates-io]
 ethereum_hashing = { git = "https://github.com/ReamLabs/ethereum_hashing.git" }

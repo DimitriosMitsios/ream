@@ -1,7 +1,8 @@
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use tokio::sync::mpsc;
 use tracing::{error, info};
 
+use alloy_primitives::{B256, FixedBytes};
 use ream_chain_lean::{lean_chain::LeanChainReader, p2p_request::LeanP2PRequest};
 use ream_consensus_lean::{
     block::{Block, BlockBody, BlockProof, Proof, SignedBlock},
@@ -9,11 +10,10 @@ use ream_consensus_lean::{
 };
 use ream_network_spec::networks::lean_network_spec;
 use ream_storage::tables::table::Table;
-use alloy_primitives::{B256, FixedBytes};
 use tree_hash::TreeHash;
 
 use methods::{GUEST_CODE_FOR_ZK_PROOF_ELF, GUEST_CODE_FOR_ZK_PROOF_ID};
-use risc0_zkvm::{default_prover, ExecutorEnv, ProverOpts};
+use risc0_zkvm::{ExecutorEnv, ProverOpts, default_prover};
 
 use crate::messages::LeanProverServiceMessage;
 
@@ -74,7 +74,9 @@ impl LeanProverService {
                     info!("Successfully generated proof for slot {}", slot);
 
                     // Gossip the proof
-                    if let Err(err) = outbound_gossip.send(LeanP2PRequest::GossipBlockProof(block_proof)) {
+                    if let Err(err) =
+                        outbound_gossip.send(LeanP2PRequest::GossipBlockProof(block_proof))
+                    {
                         error!("Failed to send gossip request for slot {}: {:?}", slot, err);
                     } else {
                         info!("Proof gossiped for slot {}", slot);
@@ -88,7 +90,10 @@ impl LeanProverService {
     }
 
     /// Generate a zero-knowledge proof for a block (runs in background task)
-    async fn generate_block_proof_task(lean_chain: LeanChainReader, slot: u64) -> Result<BlockProof> {
+    async fn generate_block_proof_task(
+        lean_chain: LeanChainReader,
+        slot: u64,
+    ) -> Result<BlockProof> {
         // Scope the read lock to only extract necessary data, then release it immediately
         // to avoid blocking write operations (like block proposals) during proof generation
         let (head, head_state, latest_known_votes_provider) = {
@@ -125,22 +130,46 @@ impl LeanProverService {
         let state = head_state.clone();
         let block_for_proving = new_block.clone();
 
-        info!("Running risc0 prover for slot {} (in blocking thread)", slot);
+        info!(
+            "Running risc0 prover for slot {} (in blocking thread)",
+            slot
+        );
 
         // Run the entire proving process in a blocking thread to avoid blocking the async runtime
         let prove_info = tokio::task::spawn_blocking(move || {
             // Setup ExecutorEnv and inject inputs to guest
-            let env = ExecutorEnv::builder()
-                .write(&state)
-                .unwrap()
-                .write(&block_for_proving)
-                .unwrap()
-                .build()
-                .unwrap();
 
-            let prover = default_prover();
-            let opts = ProverOpts::succinct();
-            prover.prove_with_opts(env, GUEST_CODE_FOR_ZK_PROOF_ELF, &opts)
+            let guest_directory = Path::new("/../methods/guest");
+
+            let compiler = DockerizedCompiler::new(
+                zkVMKind::SP1,
+                CompilerKind::RustCustomized,
+                guest_directory,
+            )?;
+            let program = compiler.compile(guest_directory)?;
+
+            // Create zkVM instance (builds Docker images if needed)
+            // It spawns a container that runs a gRPC server handling zkVM operations
+            let zkvm = DockerizedzkVM::new(zkVMKind::SP1, program, ProverResourceType::Cpu)?;
+
+            // Prepare input
+            // Use `with_prefixed_stdin` when guest uses `Platform::read_whole_input()`
+
+            let mut input_vec = Vec::new();
+            input_vec.append(state.clone());
+
+            let input = Input::new().with_prefixed_stdin(10u64.to_le_bytes().to_vec());
+            let expected_output = [input, 55u64.to_le_bytes()].concat();
+
+            // Execute
+            let (public_values, report) = zkvm.execute(&input)?;
+            assert_eq!(public_values, expected_output);
+            println!("Execution cycles: {}", report.total_num_cycles);
+
+            // Prove
+            let (public_values, proof, report) = zkvm.prove(&input, ProofKind::default())?;
+            assert_eq!(public_values, expected_output);
+            println!("Proving time: {:?}", report.proving_time);
         })
         .await
         .map_err(|e| anyhow!("Proof generation task panicked: {}", e))??;
