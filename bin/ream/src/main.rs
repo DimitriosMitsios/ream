@@ -65,7 +65,6 @@ use ream_validator_beacon::{
 use ream_validator_lean::{
     registry::load_validator_registry, service::ValidatorService as LeanValidatorService,
 };
-#[cfg(feature = "risc0")]
 use ream_prover_lean::{
     messages::LeanProverServiceMessage, service::LeanProverService,
 };
@@ -196,8 +195,7 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
         },
     ];
 
-    // Add BlockProof topic if risc0 is enabled
-    #[cfg(feature = "risc0")]
+    // Add BlockProof topic if proof generation is enabled
     if config.proof_gen {
         topics.push(LeanGossipTopic {
             fork,
@@ -226,8 +224,7 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
 
     let peer_table = network_service.peer_table();
 
-    // Initialize ProverService if risc0 is enabled
-    #[cfg(feature = "risc0")]
+    // Initialize ProverService if proof generation is enabled
     let (prover_sender, prover_service_opt) = if config.proof_gen {
         let (prover_sender, prover_receiver) = mpsc::unbounded_channel::<LeanProverServiceMessage>();
         let prover_service = LeanProverService::new(
@@ -246,9 +243,7 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
         lean_chain_reader.clone(),
         keystores,
         chain_sender,
-        #[cfg(feature = "risc0")]
         prover_sender,
-        #[cfg(feature = "risc0")]
         config.proof_gen,
     )
     .await;
@@ -276,7 +271,6 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
         }
     });
 
-    #[cfg(feature = "risc0")]
     let prover_future_opt = if let Some(prover_service) = prover_service_opt {
         Some(executor.spawn(async move {
             if let Err(err) = prover_service.start().await {
@@ -291,7 +285,6 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
         start_lean_server(server_config, lean_chain_reader, peer_table).await
     });
 
-    #[cfg(feature = "risc0")]
     if let Some(prover_future) = prover_future_opt {
         tokio::select! {
             _ = chain_future => {
@@ -324,22 +317,6 @@ pub async fn run_lean_node(config: LeanNodeConfig, executor: ReamExecutor, ream_
             _ = http_future => {
                 info!("RPC service has stopped unexpectedly");
             }
-        }
-    }
-
-    #[cfg(not(feature = "risc0"))]
-    tokio::select! {
-        _ = chain_future => {
-            info!("Chain service has stopped unexpectedly");
-        }
-        _ = network_future => {
-            info!("Network service has stopped unexpectedly");
-        }
-        _ = validator_future => {
-            info!("Validator service has stopped unexpectedly");
-        }
-        _ = http_future => {
-            info!("RPC service has stopped unexpectedly");
         }
     }
 }

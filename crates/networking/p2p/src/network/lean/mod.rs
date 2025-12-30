@@ -23,10 +23,7 @@ use ream_chain_lean::{messages::LeanChainServiceMessage, p2p_request::LeanP2PReq
 use ream_executor::ReamExecutor;
 use ssz::Encode;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
-use tracing::{info, trace, warn};
-#[cfg(feature = "risc0")]
-use tracing::error;
-#[cfg(feature = "risc0")]
+use tracing::{info, trace, warn, error};
 use bincode;
 
 use super::peer::ConnectionState;
@@ -265,7 +262,6 @@ impl LeanNetworkService {
                                 );
                             }
                         }
-                        #[cfg(feature = "risc0")]
                         LeanP2PRequest::GossipBlockProof(block_proof) => {
                             let slot = block_proof.block.slot;
 
@@ -393,20 +389,14 @@ impl LeanNetworkService {
                         warn!("failed to send vote for slot {slot} to chain: {err:?}");
                     }
                 }
-                #[cfg(feature = "risc0")]
                 Ok(LeanGossipsubMessage::BlockProof(block_proof)) => {
                     let slot = block_proof.block.slot;
-                    info!("Received BlockProof for slot {}", slot);
+                    info!("Received BlockProof for slot {} (ERE/SP1 proof, {} bytes)",
+                          slot, block_proof.proof.proof.len());
 
-                    // Verify the proof
-                    match block_proof.proof.receipt.verify(block_proof.proof.method_id) {
-                        Ok(_) => {
-                            info!("Verification successful for slot {}. Proof is valid.", slot);
-                        }
-                        Err(err) => {
-                            error!("Proof verification failed for slot {}: {:?}", slot, err);
-                        }
-                    }
+                    // TODO: Implement ERE proof verification
+                    // ERE verification requires zkVM instance with program/verification key
+                    // For now, we just log receipt of proof - verification to be added later
                 }
                 Err(err) => warn!("gossip decode failed: {err:?}"),
             }

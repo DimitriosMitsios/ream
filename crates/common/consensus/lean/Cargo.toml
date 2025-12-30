@@ -25,11 +25,5 @@ tree_hash_derive.workspace = true
 # Local dependencies
 ream-metrics.workspace = true
 
-# Optional risc0 dependencies
-risc0-zkvm = { version = "3.0.3", optional = true }
-
-[features]
-risc0 = ["risc0-zkvm"]
-
 [lints]
 workspace = true

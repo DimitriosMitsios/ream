@@ -12,8 +12,13 @@ use ream_network_spec::networks::lean_network_spec;
 use ream_storage::tables::table::Table;
 use tree_hash::TreeHash;
 
-use methods::{GUEST_CODE_FOR_ZK_PROOF_ELF, GUEST_CODE_FOR_ZK_PROOF_ID};
-use risc0_zkvm::{ExecutorEnv, ProverOpts, default_prover};
+use bincode;
+use ere_dockerized::{CompilerKind, DockerizedCompiler, DockerizedzkVM, zkVMKind};
+use ere_zkvm_interface::{
+    compiler::Compiler,
+    zkvm::{Input, ProofKind, ProverResourceType, zkVM},
+};
+use std::path::Path;
 
 use crate::messages::LeanProverServiceMessage;
 
@@ -131,54 +136,60 @@ impl LeanProverService {
         let block_for_proving = new_block.clone();
 
         info!(
-            "Running risc0 prover for slot {} (in blocking thread)",
+            "Running ERE/SP1 prover for slot {} (in blocking thread)",
             slot
         );
 
         // Run the entire proving process in a blocking thread to avoid blocking the async runtime
-        let prove_info = tokio::task::spawn_blocking(move || {
-            // Setup ExecutorEnv and inject inputs to guest
+        let prove_info = tokio::task::spawn_blocking(move || -> Result<(Vec<u8>, Vec<u8>)> {
+            // Get workspace root (must be absolute for Docker volume mounts)
+            // The workspace root is needed because guest code has dependencies on other workspace crates
+            let workspace_root = std::env::current_dir()?.canonicalize()?;
+            let guest_directory = workspace_root.join("crates/common/prover/lean/methods/guest");
 
-            let guest_directory = Path::new("/../methods/guest");
-
+            // Compile guest program with SP1
             let compiler = DockerizedCompiler::new(
                 zkVMKind::SP1,
                 CompilerKind::RustCustomized,
-                guest_directory,
+                &guest_directory,
             )?;
-            let program = compiler.compile(guest_directory)?;
+            let program = compiler.compile(&guest_directory)?;
 
             // Create zkVM instance (builds Docker images if needed)
             // It spawns a container that runs a gRPC server handling zkVM operations
             let zkvm = DockerizedzkVM::new(zkVMKind::SP1, program, ProverResourceType::Cpu)?;
 
-            // Prepare input
-            // Use `with_prefixed_stdin` when guest uses `Platform::read_whole_input()`
+            // Serialize state and block using bincode (matching guest expectations)
+            let mut input_bytes = bincode::serde::encode_to_vec(&state, bincode::config::standard())?;
+            let block_bytes = bincode::serde::encode_to_vec(&block_for_proving, bincode::config::standard())?;
+            input_bytes.extend_from_slice(&block_bytes);
 
-            let mut input_vec = Vec::new();
-            input_vec.append(state.clone());
+            // Prepare input with prefix (guest uses Platform::read_whole_input())
+            let input = Input::new().with_prefixed_stdin(input_bytes);
 
-            let input = Input::new().with_prefixed_stdin(10u64.to_le_bytes().to_vec());
-            let expected_output = [input, 55u64.to_le_bytes()].concat();
-
-            // Execute
-            let (public_values, report) = zkvm.execute(&input)?;
-            assert_eq!(public_values, expected_output);
-            println!("Execution cycles: {}", report.total_num_cycles);
-
-            // Prove
+            // Generate proof
             let (public_values, proof, report) = zkvm.prove(&input, ProofKind::default())?;
-            assert_eq!(public_values, expected_output);
-            println!("Proving time: {:?}", report.proving_time);
+
+            info!("Proving completed. Time: {:?}",
+                  report.proving_time);
+
+            // Convert ERE Proof to bytes for storage
+            // ERE Proof enum has multiple variants - extract bytes from whichever we get
+            let proof_bytes = match proof {
+                ere_zkvm_interface::Proof::Compressed(bytes) => bytes,
+                ere_zkvm_interface::Proof::Groth16(bytes) => bytes,
+            };
+
+            Ok((public_values, proof_bytes))
         })
         .await
         .map_err(|e| anyhow!("Proof generation task panicked: {}", e))??;
 
         info!("Proof generation completed for slot {}", slot);
 
-        // Extract the proven state from the receipt
-        let mut state: LeanState = prove_info.receipt.journal.decode().unwrap();
-        let receipt = prove_info.receipt;
+        // Extract the proven state from public values
+        let (public_values, proof_bytes) = prove_info;
+        let (mut state, _): (LeanState, _) = bincode::serde::decode_from_slice(&public_values, bincode::config::standard())?;
 
         // Add attestations to the block
         loop {
@@ -215,8 +226,7 @@ impl LeanProverService {
 
         // Create the proof structure
         let proof = Proof {
-            receipt,
-            method_id: GUEST_CODE_FOR_ZK_PROOF_ID,
+            proof: proof_bytes,
         };
 
         let block_proof = BlockProof {

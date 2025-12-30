@@ -25,11 +25,8 @@ ream-consensus-misc.workspace = true
 ream-network-spec.workspace = true
 ream-sync.workspace = true
 
-# Optional risc0 dependencies
-ream-prover-lean = { workspace = true, optional = true }
-
-[features]
-risc0 = ["ream-prover-lean"]
+# ERE prover dependencies
+ream-prover-lean = { workspace = true }
 
 [lints]
 workspace = true

@@ -7,8 +7,11 @@ edition = "2021"
 
 
 [dependencies]
-ream-consensus-lean = { path = "../../../../../common/consensus/lean" }
+# Use git dependency instead of path for Docker compatibility
+ream-consensus-lean = { git = "https://github.com/dimitriosmitsios/ream.git", branch = "leanprover-ere" }
 ere-platform-sp1 = { git = "https://github.com/eth-act/ere.git" }
+bincode = "2.0"
+serde = { version = "1.0", features = ["derive"] }
 
 [patch.crates-io]
 ethereum_hashing = { git = "https://github.com/ReamLabs/ethereum_hashing.git" }

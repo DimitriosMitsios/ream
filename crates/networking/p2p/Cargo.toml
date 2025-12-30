@@ -53,11 +53,8 @@ ream-storage.workspace = true
 ream-sync.workspace = true
 ream-validator-beacon.workspace = true
 
-# Optional risc0 dependencies
-bincode = { workspace = true, optional = true }
-
-[features]
-risc0 = ["ream-chain-lean/risc0", "ream-consensus-lean/risc0", "bincode"]
+# Bincode for proof serialization
+bincode = { workspace = true }
 
 [lints]
 workspace = true

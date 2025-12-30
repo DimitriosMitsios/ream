@@ -9,7 +9,6 @@ use ream_network_spec::networks::lean_network_spec;
 use tokio::sync::{mpsc, oneshot};
 use tracing::{Level, debug, enabled, info};
 use tree_hash::TreeHash;
-#[cfg(feature = "risc0")]
 use ream_prover_lean::messages::LeanProverServiceMessage;
 
 use crate::registry::LeanKeystore;
@@ -26,9 +25,7 @@ pub struct ValidatorService {
     lean_chain: LeanChainReader,
     keystores: Vec<LeanKeystore>,
     chain_sender: mpsc::UnboundedSender<LeanChainServiceMessage>,
-    #[cfg(feature = "risc0")]
     prover_sender: Option<mpsc::UnboundedSender<LeanProverServiceMessage>>,
-    #[cfg(feature = "risc0")]
     proof_gen: bool,
 }
 
@@ -37,18 +34,14 @@ impl ValidatorService {
         lean_chain: LeanChainReader,
         keystores: Vec<LeanKeystore>,
         chain_sender: mpsc::UnboundedSender<LeanChainServiceMessage>,
-        #[cfg(feature = "risc0")]
         prover_sender: Option<mpsc::UnboundedSender<LeanProverServiceMessage>>,
-        #[cfg(feature = "risc0")]
         proof_gen: bool,
     ) -> Self {
         ValidatorService {
             lean_chain,
             keystores,
             chain_sender,
-            #[cfg(feature = "risc0")]
             prover_sender,
-            #[cfg(feature = "risc0")]
             proof_gen,
         }
     }
@@ -102,8 +95,7 @@ impl ValidatorService {
                                     .send(LeanChainServiceMessage::ProcessBlock { signed_block, is_trusted: true, need_gossip: true })
                                     .expect("Failed to send block to LeanChainService");
 
-                                // Trigger proof generation if enabled (only once every 100 slots)
-                                #[cfg(feature = "risc0")]
+                                // Trigger proof generation if enabled (only once every 200 slots)
                                 if self.proof_gen && slot % 200 == 2 {
                                     if let Some(ref prover_sender) = self.prover_sender {
                                         info!(slot, "Triggering proof generation for slot {}", slot);
