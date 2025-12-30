@@ -14,17 +14,14 @@ fn main() {
     // Deserialize LeanState first, then SignedBlock from the same byte slice
     let mut cursor = std::io::Cursor::new(&input);
     let mut state: LeanState =
-        bincode::serde::decode_from_reader(&mut cursor, bincode::config::standard())
-            .expect("failed to read LeanState");
+        bincode::deserialize_from(&mut cursor).expect("failed to read LeanState");
     let new_block: SignedBlock =
-        bincode::serde::decode_from_reader(&mut cursor, bincode::config::standard())
-            .expect("failed to read SignedBlock");
+        bincode::deserialize_from(&mut cursor).expect("failed to read SignedBlock");
 
     // Execute state transition
     state.state_transition(&new_block, true, false);
 
     // Commit the result (serialize and write as public output)
-    let output = bincode::serde::encode_to_vec(&state, bincode::config::standard())
-        .expect("failed to serialize state");
+    let output = bincode::serialize(&state).expect("failed to serialize state");
     P::write_whole_output(&output);
 }

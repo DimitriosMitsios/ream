@@ -160,9 +160,9 @@ impl LeanProverService {
             let zkvm = DockerizedzkVM::new(zkVMKind::SP1, program, ProverResourceType::Cpu)?;
 
             // Serialize state and block using bincode (matching guest expectations)
-            let mut input_bytes = bincode::serde::encode_to_vec(&state, bincode::config::standard())?;
-            let block_bytes = bincode::serde::encode_to_vec(&block_for_proving, bincode::config::standard())?;
-            input_bytes.extend_from_slice(&block_bytes);
+            let mut input_bytes = Vec::new();
+            bincode::serialize_into(&mut input_bytes, &state)?;
+            bincode::serialize_into(&mut input_bytes, &block_for_proving)?;
 
             // Prepare input with prefix (guest uses Platform::read_whole_input())
             let input = Input::new().with_prefixed_stdin(input_bytes);
@@ -189,7 +189,7 @@ impl LeanProverService {
 
         // Extract the proven state from public values
         let (public_values, proof_bytes) = prove_info;
-        let (mut state, _): (LeanState, _) = bincode::serde::decode_from_slice(&public_values, bincode::config::standard())?;
+        let mut state: LeanState = bincode::deserialize(&public_values)?;
 
         // Add attestations to the block
         loop {
