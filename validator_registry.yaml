@@ -1,0 +1,16 @@
+# Validator Registry for Testing
+# Maps node identifiers to the validator IDs they control
+
+# Default node controls validators 0-3
+ream:
+  - 0
+  - 1
+  - 2
+  - 3
+
+# You can add more nodes if running multiple instances
+# ream_1:
+#   - 4
+#   - 5
+#   - 6
+#   - 7

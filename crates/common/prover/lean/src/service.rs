@@ -18,7 +18,6 @@ use ere_zkvm_interface::{
     compiler::Compiler,
     zkvm::{Input, ProofKind, ProverResourceType, zkVM},
 };
-use std::path::Path;
 
 use crate::messages::LeanProverServiceMessage;
 

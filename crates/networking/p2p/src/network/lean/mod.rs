@@ -23,7 +23,7 @@ use ream_chain_lean::{messages::LeanChainServiceMessage, p2p_request::LeanP2PReq
 use ream_executor::ReamExecutor;
 use ssz::Encode;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
-use tracing::{info, trace, warn, error};
+use tracing::{info, trace, warn};
 use bincode;
 
 use super::peer::ConnectionState;
@@ -266,7 +266,7 @@ impl LeanNetworkService {
                             let slot = block_proof.block.slot;
 
                             // Serialize using bincode
-                            match bincode::serde::encode_to_vec(&block_proof, bincode::config::standard()) {
+                            match bincode::serialize(&block_proof) {
                                 Ok(encoded_data) => {
                                     if let Err(err) = self.swarm
                                         .behaviour_mut()

@@ -1,0 +1,68 @@
+warning: use of deprecated method `tempfile::TempDir::into_path`: use TempDir::keep()
+  --> crates/storage/src/dir.rs:20:65
+   |
+20 |         return create_temp_dir(app_name, data_dir).map(TempDir::into_path);
+   |                                                                 ^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: `ream-storage` (lib) generated 1 warning
+warning: use of deprecated struct `aes::cipher::generic_array::GenericArray`: please upgrade to generic-array 1.x
+ --> crates/crypto/keystore/src/decrypt.rs:3:52
+  |
+3 |     cipher::{BlockEncrypt, KeyInit, generic_array::GenericArray},
+  |                                                    ^^^^^^^^^^^^
+  |
+  = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated struct `aes::cipher::generic_array::GenericArray`: please upgrade to generic-array 1.x
+  --> crates/crypto/keystore/src/decrypt.rs:11:25
+   |
+11 |         let mut block = GenericArray::from(counter.to_be_bytes());
+   |                         ^^^^^^^^^^^^
+
+warning: use of deprecated method `aes::cipher::generic_array::GenericArray::<T, N>::as_slice`: please upgrade to generic-array 1.x
+  --> crates/crypto/keystore/src/keystore.rs:50:39
+   |
+50 |         let valid_password = checksum.as_slice() == self.crypto.checksum.message.as_slice();
+   |                                       ^^^^^^^^
+
+warning: use of deprecated method `aes::cipher::generic_array::GenericArray::<T, N>::as_slice`: please upgrade to generic-array 1.x
+  --> crates/crypto/keystore/src/keystore.rs:60:22
+   |
+60 |             checksum.as_slice() == self.crypto.checksum.message.as_slice(),
+   |                      ^^^^^^^^
+
+warning: `ream-keystore` (lib) generated 4 warnings
+warning: unused import: `error`
+  --> crates/networking/p2p/src/network/lean/mod.rs:26:34
+   |
+26 | use tracing::{info, trace, warn, error};
+   |                                  ^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: use of deprecated type alias `libp2p_mplex::MplexConfig`: Use `Config` instead
+  --> crates/networking/p2p/src/network/misc.rs:18:40
+   |
+18 | use libp2p_mplex::{MaxBufferBehaviour, MplexConfig};
+   |                                        ^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated type alias `libp2p_mplex::MplexConfig`: Use `Config` instead
+  --> crates/networking/p2p/src/network/misc.rs:32:28
+   |
+32 |     let mut mplex_config = MplexConfig::new();
+   |                            ^^^^^^^^^^^
+
+warning: `ream-p2p` (lib) generated 3 warnings (run `cargo fix --lib -p ream-p2p` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running `target/debug/ream lean-node --network ephemery --validator-registry-path validator_registry.yaml --proof-gen`
+error: unrecognized subcommand 'lean-node'
+
+  tip: some similar subcommands exist: 'beacon_node', 'lean_node'
+
+Usage: ream [OPTIONS] <COMMAND>
+
+For more information, try '--help'.

@@ -1,0 +1,365 @@
+warning: use of deprecated method `tempfile::TempDir::into_path`: use TempDir::keep()
+  --> crates/storage/src/dir.rs:20:65
+   |
+20 |         return create_temp_dir(app_name, data_dir).map(TempDir::into_path);
+   |                                                                 ^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: `ream-storage` (lib) generated 1 warning
+warning: use of deprecated struct `aes::cipher::generic_array::GenericArray`: please upgrade to generic-array 1.x
+ --> crates/crypto/keystore/src/decrypt.rs:3:52
+  |
+3 |     cipher::{BlockEncrypt, KeyInit, generic_array::GenericArray},
+  |                                                    ^^^^^^^^^^^^
+  |
+  = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated struct `aes::cipher::generic_array::GenericArray`: please upgrade to generic-array 1.x
+  --> crates/crypto/keystore/src/decrypt.rs:11:25
+   |
+11 |         let mut block = GenericArray::from(counter.to_be_bytes());
+   |                         ^^^^^^^^^^^^
+
+warning: use of deprecated method `aes::cipher::generic_array::GenericArray::<T, N>::as_slice`: please upgrade to generic-array 1.x
+  --> crates/crypto/keystore/src/keystore.rs:50:39
+   |
+50 |         let valid_password = checksum.as_slice() == self.crypto.checksum.message.as_slice();
+   |                                       ^^^^^^^^
+
+warning: use of deprecated method `aes::cipher::generic_array::GenericArray::<T, N>::as_slice`: please upgrade to generic-array 1.x
+  --> crates/crypto/keystore/src/keystore.rs:60:22
+   |
+60 |             checksum.as_slice() == self.crypto.checksum.message.as_slice(),
+   |                      ^^^^^^^^
+
+warning: `ream-keystore` (lib) generated 4 warnings
+warning: unused import: `error`
+  --> crates/networking/p2p/src/network/lean/mod.rs:26:34
+   |
+26 | use tracing::{info, trace, warn, error};
+   |                                  ^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: use of deprecated type alias `libp2p_mplex::MplexConfig`: Use `Config` instead
+  --> crates/networking/p2p/src/network/misc.rs:18:40
+   |
+18 | use libp2p_mplex::{MaxBufferBehaviour, MplexConfig};
+   |                                        ^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: use of deprecated type alias `libp2p_mplex::MplexConfig`: Use `Config` instead
+  --> crates/networking/p2p/src/network/misc.rs:32:28
+   |
+32 |     let mut mplex_config = MplexConfig::new();
+   |                            ^^^^^^^^^^^
+
+warning: `ream-p2p` (lib) generated 3 warnings (run `cargo fix --lib -p ream-p2p` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running `target/debug/ream lean_node --network ephemery --validator-registry-path validator_registry.yaml --proof-gen`
+[2m2025-12-30T10:56:22.710035Z[0m [32m INFO[0m [2mream[0m[2m:[0m starting up lean node...
+[2m2025-12-30T10:56:22.713719Z[0m [32m INFO[0m [2mream[0m[2m:[0m ream lean database has been initialized
+[2m2025-12-30T10:56:22.736489Z[0m [32m INFO[0m [2mlibp2p_swarm[0m[2m:[0m [3mlocal_peer_id[0m[2m=[0m16Uiu2HAmTw2tyfzwvYhY3235f1aGdR1CerenKiS7CoMhb2xZuKtZ
+[2m2025-12-30T10:56:22.736607Z[0m [32m INFO[0m [2mream_p2p::network::lean[0m[2m:[0m Listening on /ip4/0.0.0.0/udp/9000/quic-v1
+[2m2025-12-30T10:56:22.737631Z[0m [32m INFO[0m [2mream_rpc_common::server[0m[2m:[0m starting HTTP server on 127.0.0.1:5052
+[2m2025-12-30T10:56:22.737641Z[0m [32m INFO[0m [2mream_p2p::network::lean[0m[2m:[0m LeanNetworkService started
+[2m2025-12-30T10:56:22.737641Z[0m [32m INFO[0m [2mream_prover_lean::service[0m[2m:[0m LeanProverService started
+[2m2025-12-30T10:56:22.737733Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m ValidatorService started with 4 validator(s) [3mgenesis_time[0m[2m=[0m1767092185
+[2m2025-12-30T10:56:22.737868Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m LeanChainService started [3mgenesis_time[0m[2m=[0m1767092185
+[2m2025-12-30T10:56:25.001413Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Not proposer for slot 0 (proposer is validator 0), skipping
+[2m2025-12-30T10:56:25.001850Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m0 [3mjustified_slot[0m[2m=[0m0 [3mfinalized_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:26.000706Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m0 [3mtick[0m[2m=[0m1
+[2m2025-12-30T10:56:26.001623Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m0 [3mhead_slot[0m[2m=[0m0 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:26.001869Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m0 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:26.001996Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m0 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:26.002074Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m0 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:26.002162Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m0 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:26.003059Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m0 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:26.003811Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m0 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:26.004482Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m0 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:26.005185Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m0 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:27.000640Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m0 [3mtick[0m[2m=[0m2
+[2m2025-12-30T10:56:28.001382Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m0 [3mtick[0m[2m=[0m3
+[2m2025-12-30T10:56:29.000664Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 1 [3mslot[0m[2m=[0m1 [3mtick[0m[2m=[0m4
+[2m2025-12-30T10:56:29.000833Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m1 [3mjustified_slot[0m[2m=[0m0 [3mfinalized_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:29.033660Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 1 [3mslot[0m[2m=[0m1 [3mblock_root[0m[2m=[0m0xffeda87ae45453a1b1fbd42da4708a3009d5bd8c5a9ddf4a4222dd43c25d3cac
+[2m2025-12-30T10:56:29.033831Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 1 [3mslot[0m[2m=[0m1 [3mblock_root[0m[2m=[0m0xffeda87ae45453a1b1fbd42da4708a3009d5bd8c5a9ddf4a4222dd43c25d3cac
+[2m2025-12-30T10:56:29.063312Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m1 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:30.001355Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m1 [3mtick[0m[2m=[0m5
+[2m2025-12-30T10:56:30.002288Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m1 [3mhead_slot[0m[2m=[0m1 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:30.002513Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m1 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:30.002643Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m1 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:30.002715Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m1 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:30.002771Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m1 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:30.003469Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m1 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:30.004295Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m1 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:30.004990Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m1 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:30.005811Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m1 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:31.000642Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m1 [3mtick[0m[2m=[0m6
+[2m2025-12-30T10:56:32.001387Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m1 [3mtick[0m[2m=[0m7
+[2m2025-12-30T10:56:33.001421Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 2 [3mslot[0m[2m=[0m2 [3mtick[0m[2m=[0m8
+[2m2025-12-30T10:56:33.001574Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m2 [3mjustified_slot[0m[2m=[0m0 [3mfinalized_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.043084Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.043144Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 0 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.043167Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 2 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.043189Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 1 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.048602Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 2 [3mslot[0m[2m=[0m2 [3mblock_root[0m[2m=[0m0xf53f49ddcfb7f925f3989961a108b2cfd9e0a4e5eb4b05e4b2a3eee1c4a4ebf3
+[2m2025-12-30T10:56:33.048676Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Triggering proof generation for slot 2 [3mslot[0m[2m=[0m2
+[2m2025-12-30T10:56:33.048746Z[0m [32m INFO[0m [2mream_prover_lean::service[0m[2m:[0m Spawning proof generation task for slot 2
+[2m2025-12-30T10:56:33.048817Z[0m [32m INFO[0m [2mream_prover_lean::service[0m[2m:[0m Starting proof generation for slot 2
+[2m2025-12-30T10:56:33.048963Z[0m [32m INFO[0m [2mream_prover_lean::service[0m[2m:[0m Running ERE/SP1 prover for slot 2 (in blocking thread)
+[2m2025-12-30T10:56:33.053028Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 2 [3mslot[0m[2m=[0m2 [3mblock_root[0m[2m=[0m0xf53f49ddcfb7f925f3989961a108b2cfd9e0a4e5eb4b05e4b2a3eee1c4a4ebf3
+[2m2025-12-30T10:56:33.062500Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.062543Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 0 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.062559Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 2 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.062574Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 1 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:33.108642Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m2 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:33.116211Z[0m [32m INFO[0m [2mere_dockerized::compiler[0m[2m:[0m Building image ere-base-sp1:0.0.15-02d7c9a...
+ERROR: BuildKit is enabled but the buildx component is missing or broken.
+       Install the buildx component to build images with BuildKit:
+       https://docs.docker.com/go/buildx/
+[2m2025-12-30T10:56:33.126935Z[0m [31mERROR[0m [2mream_prover_lean::service[0m[2m:[0m Failed to generate proof for slot 2: Command `"docker" "build" "--file" "/home/dimitris/.cargo/git/checkouts/ere-02b047aa486ef1ec/02d7c9a/docker/sp1/Dockerfile.base" "--tag" "ere-base-sp1:0.0.15-02d7c9a" "--build-arg" "BASE_IMAGE=ere-base:0.0.15-02d7c9a" "/home/dimitris/.cargo/git/checkouts/ere-02b047aa486ef1ec/02d7c9a"` exit with exit status: 1
+[2m2025-12-30T10:56:34.001344Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m2 [3mtick[0m[2m=[0m9
+[2m2025-12-30T10:56:34.002093Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m2 [3mhead_slot[0m[2m=[0m2 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m1
+[2m2025-12-30T10:56:34.002265Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m2 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m1
+[2m2025-12-30T10:56:34.002326Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m2 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m1
+[2m2025-12-30T10:56:34.002367Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m2 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m1
+[2m2025-12-30T10:56:34.002403Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m2 [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m1
+[2m2025-12-30T10:56:34.002926Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m2 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:34.003363Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m2 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:34.003719Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m2 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:34.004063Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m2 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:35.001375Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m2 [3mtick[0m[2m=[0m10
+[2m2025-12-30T10:56:36.001393Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m2 [3mtick[0m[2m=[0m11
+[2m2025-12-30T10:56:37.001368Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 3 [3mslot[0m[2m=[0m3 [3mtick[0m[2m=[0m12
+[2m2025-12-30T10:56:37.001485Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m3 [3mjustified_slot[0m[2m=[0m0 [3mfinalized_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:37.040463Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m1 [3mroot[0m[2m=[0m0xffeda87ae45453a1b1fbd42da4708a3009d5bd8c5a9ddf4a4222dd43c25d3cac
+[2m2025-12-30T10:56:37.040576Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m0 [3mroot[0m[2m=[0m0x0aa679fa3ee242a25a379ecfedcff7fe8aa1e0d414edf56a5dc63e88c397da84
+[2m2025-12-30T10:56:37.040646Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m1
+[2m2025-12-30T10:56:37.047812Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 3 [3mslot[0m[2m=[0m3 [3mblock_root[0m[2m=[0m0xb3f960735a1452e02633aded7e7d33b30bf239dec5ff20552e85ca4779fb47d5
+[2m2025-12-30T10:56:37.050717Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 3 [3mslot[0m[2m=[0m3 [3mblock_root[0m[2m=[0m0xb3f960735a1452e02633aded7e7d33b30bf239dec5ff20552e85ca4779fb47d5
+[2m2025-12-30T10:56:37.057355Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m1 [3mroot[0m[2m=[0m0xffeda87ae45453a1b1fbd42da4708a3009d5bd8c5a9ddf4a4222dd43c25d3cac
+[2m2025-12-30T10:56:37.057409Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m0 [3mroot[0m[2m=[0m0x0aa679fa3ee242a25a379ecfedcff7fe8aa1e0d414edf56a5dc63e88c397da84
+[2m2025-12-30T10:56:37.057428Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m0 [3mtarget_slot[0m[2m=[0m1
+[2m2025-12-30T10:56:37.105054Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m3 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:38.001359Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m3 [3mtick[0m[2m=[0m13
+[2m2025-12-30T10:56:38.007299Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m3 [3mhead_slot[0m[2m=[0m3 [3msource_slot[0m[2m=[0m1 [3mtarget_slot[0m[2m=[0m2
+[2m2025-12-30T10:56:38.007502Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m3 [3msource_slot[0m[2m=[0m1 [3mtarget_slot[0m[2m=[0m2
+[2m2025-12-30T10:56:38.007613Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m3 [3msource_slot[0m[2m=[0m1 [3mtarget_slot[0m[2m=[0m2
+[2m2025-12-30T10:56:38.007684Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m3 [3msource_slot[0m[2m=[0m1 [3mtarget_slot[0m[2m=[0m2
+[2m2025-12-30T10:56:38.007772Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m3 [3msource_slot[0m[2m=[0m1 [3mtarget_slot[0m[2m=[0m2
+[2m2025-12-30T10:56:38.008609Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m3 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:38.009384Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m3 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:38.010178Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m3 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:38.010990Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m3 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:39.000654Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m3 [3mtick[0m[2m=[0m14
+[2m2025-12-30T10:56:40.000924Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m3 [3mtick[0m[2m=[0m15
+[2m2025-12-30T10:56:41.001469Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 0 [3mslot[0m[2m=[0m4 [3mtick[0m[2m=[0m16
+[2m2025-12-30T10:56:41.001677Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m4 [3mjustified_slot[0m[2m=[0m1 [3mfinalized_slot[0m[2m=[0m0
+[2m2025-12-30T10:56:41.048867Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m2 [3mroot[0m[2m=[0m0xf53f49ddcfb7f925f3989961a108b2cfd9e0a4e5eb4b05e4b2a3eee1c4a4ebf3
+[2m2025-12-30T10:56:41.048935Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m1 [3mroot[0m[2m=[0m0xffeda87ae45453a1b1fbd42da4708a3009d5bd8c5a9ddf4a4222dd43c25d3cac
+[2m2025-12-30T10:56:41.048965Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 0 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m1 [3mtarget_slot[0m[2m=[0m2
+[2m2025-12-30T10:56:41.060817Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 0 [3mslot[0m[2m=[0m4 [3mblock_root[0m[2m=[0m0x7e6394ed772ec71bec7c150da920044ff21d8d3ef92d8b2dc44d2d9b0bfc8e7a
+[2m2025-12-30T10:56:41.063614Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 0 [3mslot[0m[2m=[0m4 [3mblock_root[0m[2m=[0m0x7e6394ed772ec71bec7c150da920044ff21d8d3ef92d8b2dc44d2d9b0bfc8e7a
+[2m2025-12-30T10:56:41.068709Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m2 [3mroot[0m[2m=[0m0xf53f49ddcfb7f925f3989961a108b2cfd9e0a4e5eb4b05e4b2a3eee1c4a4ebf3
+[2m2025-12-30T10:56:41.068760Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m1 [3mroot[0m[2m=[0m0xffeda87ae45453a1b1fbd42da4708a3009d5bd8c5a9ddf4a4222dd43c25d3cac
+[2m2025-12-30T10:56:41.068777Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 0 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m1 [3mtarget_slot[0m[2m=[0m2
+[2m2025-12-30T10:56:41.108276Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m4 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:42.001148Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m4 [3mtick[0m[2m=[0m17
+[2m2025-12-30T10:56:42.006169Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m4 [3mhead_slot[0m[2m=[0m4 [3msource_slot[0m[2m=[0m2 [3mtarget_slot[0m[2m=[0m3
+[2m2025-12-30T10:56:42.006366Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m4 [3msource_slot[0m[2m=[0m2 [3mtarget_slot[0m[2m=[0m3
+[2m2025-12-30T10:56:42.006461Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m4 [3msource_slot[0m[2m=[0m2 [3mtarget_slot[0m[2m=[0m3
+[2m2025-12-30T10:56:42.006537Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m4 [3msource_slot[0m[2m=[0m2 [3mtarget_slot[0m[2m=[0m3
+[2m2025-12-30T10:56:42.006614Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m4 [3msource_slot[0m[2m=[0m2 [3mtarget_slot[0m[2m=[0m3
+[2m2025-12-30T10:56:42.007307Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m4 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:42.008001Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m4 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:42.008656Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m4 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:42.009311Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m4 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:43.000505Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m4 [3mtick[0m[2m=[0m18
+[2m2025-12-30T10:56:44.001370Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m4 [3mtick[0m[2m=[0m19
+[2m2025-12-30T10:56:45.001380Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 1 [3mslot[0m[2m=[0m5 [3mtick[0m[2m=[0m20
+[2m2025-12-30T10:56:45.001549Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m5 [3mjustified_slot[0m[2m=[0m2 [3mfinalized_slot[0m[2m=[0m1
+[2m2025-12-30T10:56:45.049601Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m3 [3mroot[0m[2m=[0m0xb3f960735a1452e02633aded7e7d33b30bf239dec5ff20552e85ca4779fb47d5
+[2m2025-12-30T10:56:45.049667Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m2 [3mroot[0m[2m=[0m0xf53f49ddcfb7f925f3989961a108b2cfd9e0a4e5eb4b05e4b2a3eee1c4a4ebf3
+[2m2025-12-30T10:56:45.049704Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 2 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m2 [3mtarget_slot[0m[2m=[0m3
+[2m2025-12-30T10:56:45.058875Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 1 [3mslot[0m[2m=[0m5 [3mblock_root[0m[2m=[0m0x1192c260f982336ae8e839ea217092bccd74b48de90a926a7a86b2aca2d81365
+[2m2025-12-30T10:56:45.062705Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 1 [3mslot[0m[2m=[0m5 [3mblock_root[0m[2m=[0m0x1192c260f982336ae8e839ea217092bccd74b48de90a926a7a86b2aca2d81365
+[2m2025-12-30T10:56:45.067239Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m3 [3mroot[0m[2m=[0m0xb3f960735a1452e02633aded7e7d33b30bf239dec5ff20552e85ca4779fb47d5
+[2m2025-12-30T10:56:45.067285Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m2 [3mroot[0m[2m=[0m0xf53f49ddcfb7f925f3989961a108b2cfd9e0a4e5eb4b05e4b2a3eee1c4a4ebf3
+[2m2025-12-30T10:56:45.067301Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 2 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m2 [3mtarget_slot[0m[2m=[0m3
+[2m2025-12-30T10:56:45.101764Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m5 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:46.001203Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m5 [3mtick[0m[2m=[0m21
+[2m2025-12-30T10:56:46.008293Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m5 [3mhead_slot[0m[2m=[0m5 [3msource_slot[0m[2m=[0m3 [3mtarget_slot[0m[2m=[0m4
+[2m2025-12-30T10:56:46.008507Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m5 [3msource_slot[0m[2m=[0m3 [3mtarget_slot[0m[2m=[0m4
+[2m2025-12-30T10:56:46.008598Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m5 [3msource_slot[0m[2m=[0m3 [3mtarget_slot[0m[2m=[0m4
+[2m2025-12-30T10:56:46.008682Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m5 [3msource_slot[0m[2m=[0m3 [3mtarget_slot[0m[2m=[0m4
+[2m2025-12-30T10:56:46.008761Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m5 [3msource_slot[0m[2m=[0m3 [3mtarget_slot[0m[2m=[0m4
+[2m2025-12-30T10:56:46.009595Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m5 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:46.010351Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m5 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:46.011116Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m5 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:46.011881Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m5 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:47.000491Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m5 [3mtick[0m[2m=[0m22
+[2m2025-12-30T10:56:48.001392Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m5 [3mtick[0m[2m=[0m23
+[2m2025-12-30T10:56:49.000620Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 2 [3mslot[0m[2m=[0m6 [3mtick[0m[2m=[0m24
+[2m2025-12-30T10:56:49.000825Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m6 [3mjustified_slot[0m[2m=[0m3 [3mfinalized_slot[0m[2m=[0m2
+[2m2025-12-30T10:56:49.032504Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m4 [3mroot[0m[2m=[0m0x7e6394ed772ec71bec7c150da920044ff21d8d3ef92d8b2dc44d2d9b0bfc8e7a
+[2m2025-12-30T10:56:49.032544Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m3 [3mroot[0m[2m=[0m0xb3f960735a1452e02633aded7e7d33b30bf239dec5ff20552e85ca4779fb47d5
+[2m2025-12-30T10:56:49.032556Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m3 [3mtarget_slot[0m[2m=[0m4
+[2m2025-12-30T10:56:49.037086Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 2 [3mslot[0m[2m=[0m6 [3mblock_root[0m[2m=[0m0x97b7c782613892b6310d85076dfcac64d48ece413a982255fecb65ca65af833f
+[2m2025-12-30T10:56:49.039399Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 2 [3mslot[0m[2m=[0m6 [3mblock_root[0m[2m=[0m0x97b7c782613892b6310d85076dfcac64d48ece413a982255fecb65ca65af833f
+[2m2025-12-30T10:56:49.044621Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m4 [3mroot[0m[2m=[0m0x7e6394ed772ec71bec7c150da920044ff21d8d3ef92d8b2dc44d2d9b0bfc8e7a
+[2m2025-12-30T10:56:49.044669Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m3 [3mroot[0m[2m=[0m0xb3f960735a1452e02633aded7e7d33b30bf239dec5ff20552e85ca4779fb47d5
+[2m2025-12-30T10:56:49.044683Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m3 [3mtarget_slot[0m[2m=[0m4
+[2m2025-12-30T10:56:49.088464Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m6 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:50.001078Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m6 [3mtick[0m[2m=[0m25
+[2m2025-12-30T10:56:50.004705Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m6 [3mhead_slot[0m[2m=[0m6 [3msource_slot[0m[2m=[0m4 [3mtarget_slot[0m[2m=[0m5
+[2m2025-12-30T10:56:50.004856Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m6 [3msource_slot[0m[2m=[0m4 [3mtarget_slot[0m[2m=[0m5
+[2m2025-12-30T10:56:50.004919Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m6 [3msource_slot[0m[2m=[0m4 [3mtarget_slot[0m[2m=[0m5
+[2m2025-12-30T10:56:50.004953Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m6 [3msource_slot[0m[2m=[0m4 [3mtarget_slot[0m[2m=[0m5
+[2m2025-12-30T10:56:50.004998Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m6 [3msource_slot[0m[2m=[0m4 [3mtarget_slot[0m[2m=[0m5
+[2m2025-12-30T10:56:50.005425Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m6 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:50.005844Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m6 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:50.006699Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m6 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:50.007805Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m6 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:51.001389Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m6 [3mtick[0m[2m=[0m26
+[2m2025-12-30T10:56:52.001376Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m6 [3mtick[0m[2m=[0m27
+[2m2025-12-30T10:56:53.000604Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 3 [3mslot[0m[2m=[0m7 [3mtick[0m[2m=[0m28
+[2m2025-12-30T10:56:53.000799Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m7 [3mjustified_slot[0m[2m=[0m4 [3mfinalized_slot[0m[2m=[0m3
+[2m2025-12-30T10:56:53.033381Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m5 [3mroot[0m[2m=[0m0x1192c260f982336ae8e839ea217092bccd74b48de90a926a7a86b2aca2d81365
+[2m2025-12-30T10:56:53.033425Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m4 [3mroot[0m[2m=[0m0x7e6394ed772ec71bec7c150da920044ff21d8d3ef92d8b2dc44d2d9b0bfc8e7a
+[2m2025-12-30T10:56:53.033438Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 1 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m4 [3mtarget_slot[0m[2m=[0m5
+[2m2025-12-30T10:56:53.038012Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 3 [3mslot[0m[2m=[0m7 [3mblock_root[0m[2m=[0m0xdb46e2a3de2ff547cb12d158d483da4cf41bf4e873fd0eb66dfeb9193b01a3b5
+[2m2025-12-30T10:56:53.040205Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 3 [3mslot[0m[2m=[0m7 [3mblock_root[0m[2m=[0m0xdb46e2a3de2ff547cb12d158d483da4cf41bf4e873fd0eb66dfeb9193b01a3b5
+[2m2025-12-30T10:56:53.045574Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m5 [3mroot[0m[2m=[0m0x1192c260f982336ae8e839ea217092bccd74b48de90a926a7a86b2aca2d81365
+[2m2025-12-30T10:56:53.045634Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m4 [3mroot[0m[2m=[0m0x7e6394ed772ec71bec7c150da920044ff21d8d3ef92d8b2dc44d2d9b0bfc8e7a
+[2m2025-12-30T10:56:53.045674Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 1 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m4 [3mtarget_slot[0m[2m=[0m5
+[2m2025-12-30T10:56:53.083958Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m7 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:54.000514Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m7 [3mtick[0m[2m=[0m29
+[2m2025-12-30T10:56:54.004220Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m7 [3mhead_slot[0m[2m=[0m7 [3msource_slot[0m[2m=[0m5 [3mtarget_slot[0m[2m=[0m6
+[2m2025-12-30T10:56:54.004415Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m7 [3msource_slot[0m[2m=[0m5 [3mtarget_slot[0m[2m=[0m6
+[2m2025-12-30T10:56:54.004507Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m7 [3msource_slot[0m[2m=[0m5 [3mtarget_slot[0m[2m=[0m6
+[2m2025-12-30T10:56:54.004582Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m7 [3msource_slot[0m[2m=[0m5 [3mtarget_slot[0m[2m=[0m6
+[2m2025-12-30T10:56:54.004656Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m7 [3msource_slot[0m[2m=[0m5 [3mtarget_slot[0m[2m=[0m6
+[2m2025-12-30T10:56:54.005426Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m7 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:54.006197Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m7 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:54.006880Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m7 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:54.007420Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m7 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:55.001134Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m7 [3mtick[0m[2m=[0m30
+[2m2025-12-30T10:56:56.001001Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m7 [3mtick[0m[2m=[0m31
+[2m2025-12-30T10:56:57.001378Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 0 [3mslot[0m[2m=[0m8 [3mtick[0m[2m=[0m32
+[2m2025-12-30T10:56:57.001494Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m8 [3mjustified_slot[0m[2m=[0m5 [3mfinalized_slot[0m[2m=[0m4
+[2m2025-12-30T10:56:57.038872Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m6 [3mroot[0m[2m=[0m0x97b7c782613892b6310d85076dfcac64d48ece413a982255fecb65ca65af833f
+[2m2025-12-30T10:56:57.038922Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m5 [3mroot[0m[2m=[0m0x1192c260f982336ae8e839ea217092bccd74b48de90a926a7a86b2aca2d81365
+[2m2025-12-30T10:56:57.038941Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m5 [3mtarget_slot[0m[2m=[0m6
+[2m2025-12-30T10:56:57.045696Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 0 [3mslot[0m[2m=[0m8 [3mblock_root[0m[2m=[0m0xc3c7b3cf525b543fd9d4216b660ae5c9a348d714c9fb36a0b2e11ee3f0728df1
+[2m2025-12-30T10:56:57.049155Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 0 [3mslot[0m[2m=[0m8 [3mblock_root[0m[2m=[0m0xc3c7b3cf525b543fd9d4216b660ae5c9a348d714c9fb36a0b2e11ee3f0728df1
+[2m2025-12-30T10:56:57.055751Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m6 [3mroot[0m[2m=[0m0x97b7c782613892b6310d85076dfcac64d48ece413a982255fecb65ca65af833f
+[2m2025-12-30T10:56:57.055816Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m5 [3mroot[0m[2m=[0m0x1192c260f982336ae8e839ea217092bccd74b48de90a926a7a86b2aca2d81365
+[2m2025-12-30T10:56:57.055837Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m5 [3mtarget_slot[0m[2m=[0m6
+[2m2025-12-30T10:56:57.102888Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m8 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:58.001330Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m8 [3mtick[0m[2m=[0m33
+[2m2025-12-30T10:56:58.005665Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m8 [3mhead_slot[0m[2m=[0m8 [3msource_slot[0m[2m=[0m6 [3mtarget_slot[0m[2m=[0m7
+[2m2025-12-30T10:56:58.005839Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m8 [3msource_slot[0m[2m=[0m6 [3mtarget_slot[0m[2m=[0m7
+[2m2025-12-30T10:56:58.005919Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m8 [3msource_slot[0m[2m=[0m6 [3mtarget_slot[0m[2m=[0m7
+[2m2025-12-30T10:56:58.005979Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m8 [3msource_slot[0m[2m=[0m6 [3mtarget_slot[0m[2m=[0m7
+[2m2025-12-30T10:56:58.006035Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m8 [3msource_slot[0m[2m=[0m6 [3mtarget_slot[0m[2m=[0m7
+[2m2025-12-30T10:56:58.006776Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m8 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:58.007372Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m8 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:58.008032Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m8 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:58.008709Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m8 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:56:59.001361Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m8 [3mtick[0m[2m=[0m34
+[2m2025-12-30T10:57:00.001377Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m8 [3mtick[0m[2m=[0m35
+[2m2025-12-30T10:57:01.000650Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 1 [3mslot[0m[2m=[0m9 [3mtick[0m[2m=[0m36
+[2m2025-12-30T10:57:01.000931Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m9 [3mjustified_slot[0m[2m=[0m6 [3mfinalized_slot[0m[2m=[0m5
+[2m2025-12-30T10:57:01.055586Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m7 [3mroot[0m[2m=[0m0xdb46e2a3de2ff547cb12d158d483da4cf41bf4e873fd0eb66dfeb9193b01a3b5
+[2m2025-12-30T10:57:01.055702Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m6 [3mroot[0m[2m=[0m0x97b7c782613892b6310d85076dfcac64d48ece413a982255fecb65ca65af833f
+[2m2025-12-30T10:57:01.055759Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 0 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m6 [3mtarget_slot[0m[2m=[0m7
+[2m2025-12-30T10:57:01.061804Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 1 [3mslot[0m[2m=[0m9 [3mblock_root[0m[2m=[0m0xf3cb6bc1d4165d33a345da482fe1b0b0399b8759f3b6c0914ba00ce6d194c51f
+[2m2025-12-30T10:57:01.063783Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 1 [3mslot[0m[2m=[0m9 [3mblock_root[0m[2m=[0m0xf3cb6bc1d4165d33a345da482fe1b0b0399b8759f3b6c0914ba00ce6d194c51f
+[2m2025-12-30T10:57:01.068043Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m7 [3mroot[0m[2m=[0m0xdb46e2a3de2ff547cb12d158d483da4cf41bf4e873fd0eb66dfeb9193b01a3b5
+[2m2025-12-30T10:57:01.068086Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m6 [3mroot[0m[2m=[0m0x97b7c782613892b6310d85076dfcac64d48ece413a982255fecb65ca65af833f
+[2m2025-12-30T10:57:01.068098Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 0 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m6 [3mtarget_slot[0m[2m=[0m7
+[2m2025-12-30T10:57:01.105735Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m9 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:02.001282Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m9 [3mtick[0m[2m=[0m37
+[2m2025-12-30T10:57:02.003702Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m9 [3mhead_slot[0m[2m=[0m9 [3msource_slot[0m[2m=[0m7 [3mtarget_slot[0m[2m=[0m8
+[2m2025-12-30T10:57:02.003814Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m9 [3msource_slot[0m[2m=[0m7 [3mtarget_slot[0m[2m=[0m8
+[2m2025-12-30T10:57:02.003854Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m9 [3msource_slot[0m[2m=[0m7 [3mtarget_slot[0m[2m=[0m8
+[2m2025-12-30T10:57:02.003876Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m9 [3msource_slot[0m[2m=[0m7 [3mtarget_slot[0m[2m=[0m8
+[2m2025-12-30T10:57:02.003896Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m9 [3msource_slot[0m[2m=[0m7 [3mtarget_slot[0m[2m=[0m8
+[2m2025-12-30T10:57:02.004252Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m9 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:02.004692Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m9 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:02.005065Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m9 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:02.005442Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m9 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:03.001442Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m9 [3mtick[0m[2m=[0m38
+[2m2025-12-30T10:57:04.000690Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m9 [3mtick[0m[2m=[0m39
+[2m2025-12-30T10:57:05.001011Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 2 [3mslot[0m[2m=[0m10 [3mtick[0m[2m=[0m40
+[2m2025-12-30T10:57:05.001285Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m10 [3mjustified_slot[0m[2m=[0m7 [3mfinalized_slot[0m[2m=[0m6
+[2m2025-12-30T10:57:05.051813Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m8 [3mroot[0m[2m=[0m0xc3c7b3cf525b543fd9d4216b660ae5c9a348d714c9fb36a0b2e11ee3f0728df1
+[2m2025-12-30T10:57:05.051869Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m7 [3mroot[0m[2m=[0m0xdb46e2a3de2ff547cb12d158d483da4cf41bf4e873fd0eb66dfeb9193b01a3b5
+[2m2025-12-30T10:57:05.051901Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m7 [3mtarget_slot[0m[2m=[0m8
+[2m2025-12-30T10:57:05.059588Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 2 [3mslot[0m[2m=[0m10 [3mblock_root[0m[2m=[0m0x85667895b7d27af9036ab1b09459e6fa88073f2f3b70625e4a618cf86a24c057
+[2m2025-12-30T10:57:05.061410Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 2 [3mslot[0m[2m=[0m10 [3mblock_root[0m[2m=[0m0x85667895b7d27af9036ab1b09459e6fa88073f2f3b70625e4a618cf86a24c057
+[2m2025-12-30T10:57:05.065918Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m8 [3mroot[0m[2m=[0m0xc3c7b3cf525b543fd9d4216b660ae5c9a348d714c9fb36a0b2e11ee3f0728df1
+[2m2025-12-30T10:57:05.065965Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m7 [3mroot[0m[2m=[0m0xdb46e2a3de2ff547cb12d158d483da4cf41bf4e873fd0eb66dfeb9193b01a3b5
+[2m2025-12-30T10:57:05.065981Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m7 [3mtarget_slot[0m[2m=[0m8
+[2m2025-12-30T10:57:05.102706Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m10 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:06.001397Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m10 [3mtick[0m[2m=[0m41
+[2m2025-12-30T10:57:06.006199Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m10 [3mhead_slot[0m[2m=[0m10 [3msource_slot[0m[2m=[0m8 [3mtarget_slot[0m[2m=[0m9
+[2m2025-12-30T10:57:06.006379Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m10 [3msource_slot[0m[2m=[0m8 [3mtarget_slot[0m[2m=[0m9
+[2m2025-12-30T10:57:06.006450Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m10 [3msource_slot[0m[2m=[0m8 [3mtarget_slot[0m[2m=[0m9
+[2m2025-12-30T10:57:06.006498Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m10 [3msource_slot[0m[2m=[0m8 [3mtarget_slot[0m[2m=[0m9
+[2m2025-12-30T10:57:06.006547Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m10 [3msource_slot[0m[2m=[0m8 [3mtarget_slot[0m[2m=[0m9
+[2m2025-12-30T10:57:06.007261Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m10 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:06.007853Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m10 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:06.008423Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m10 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:06.009011Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m10 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:07.001085Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m10 [3mtick[0m[2m=[0m42
+[2m2025-12-30T10:57:08.001401Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m10 [3mtick[0m[2m=[0m43
+[2m2025-12-30T10:57:09.000731Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 3 [3mslot[0m[2m=[0m11 [3mtick[0m[2m=[0m44
+[2m2025-12-30T10:57:09.000955Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m11 [3mjustified_slot[0m[2m=[0m8 [3mfinalized_slot[0m[2m=[0m7
+[2m2025-12-30T10:57:09.048707Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m9 [3mroot[0m[2m=[0m0xf3cb6bc1d4165d33a345da482fe1b0b0399b8759f3b6c0914ba00ce6d194c51f
+[2m2025-12-30T10:57:09.048757Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m8 [3mroot[0m[2m=[0m0xc3c7b3cf525b543fd9d4216b660ae5c9a348d714c9fb36a0b2e11ee3f0728df1
+[2m2025-12-30T10:57:09.048779Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m8 [3mtarget_slot[0m[2m=[0m9
+[2m2025-12-30T10:57:09.056545Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 3 [3mslot[0m[2m=[0m11 [3mblock_root[0m[2m=[0m0xc6b1f0a81155e1f28b0fab5409cb5d4f75b77f7adecae9718de27c39a65c43f8
+[2m2025-12-30T10:57:09.058414Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 3 [3mslot[0m[2m=[0m11 [3mblock_root[0m[2m=[0m0xc6b1f0a81155e1f28b0fab5409cb5d4f75b77f7adecae9718de27c39a65c43f8
+[2m2025-12-30T10:57:09.064043Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m9 [3mroot[0m[2m=[0m0xf3cb6bc1d4165d33a345da482fe1b0b0399b8759f3b6c0914ba00ce6d194c51f
+[2m2025-12-30T10:57:09.064094Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m8 [3mroot[0m[2m=[0m0xc3c7b3cf525b543fd9d4216b660ae5c9a348d714c9fb36a0b2e11ee3f0728df1
+[2m2025-12-30T10:57:09.064110Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 3 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m8 [3mtarget_slot[0m[2m=[0m9
+[2m2025-12-30T10:57:09.102512Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m11 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:10.001325Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m11 [3mtick[0m[2m=[0m45
+[2m2025-12-30T10:57:10.005885Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m11 [3mhead_slot[0m[2m=[0m11 [3msource_slot[0m[2m=[0m9 [3mtarget_slot[0m[2m=[0m10
+[2m2025-12-30T10:57:10.006041Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m11 [3msource_slot[0m[2m=[0m9 [3mtarget_slot[0m[2m=[0m10
+[2m2025-12-30T10:57:10.006158Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m11 [3msource_slot[0m[2m=[0m9 [3mtarget_slot[0m[2m=[0m10
+[2m2025-12-30T10:57:10.006215Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m11 [3msource_slot[0m[2m=[0m9 [3mtarget_slot[0m[2m=[0m10
+[2m2025-12-30T10:57:10.006269Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m11 [3msource_slot[0m[2m=[0m9 [3mtarget_slot[0m[2m=[0m10
+[2m2025-12-30T10:57:10.006784Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m11 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:10.007212Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m11 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:10.007634Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m11 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:10.008010Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m11 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:11.001111Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m11 [3mtick[0m[2m=[0m46
+[2m2025-12-30T10:57:12.000996Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m11 [3mtick[0m[2m=[0m47
+[2m2025-12-30T10:57:13.000975Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Proposing block by Validator 0 [3mslot[0m[2m=[0m12 [3mtick[0m[2m=[0m48
+[2m2025-12-30T10:57:13.001203Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Current head state information [3mslot[0m[2m=[0m12 [3mjustified_slot[0m[2m=[0m9 [3mfinalized_slot[0m[2m=[0m8
+[2m2025-12-30T10:57:13.042297Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m10 [3mroot[0m[2m=[0m0x85667895b7d27af9036ab1b09459e6fa88073f2f3b70625e4a618cf86a24c057
+[2m2025-12-30T10:57:13.042339Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m9 [3mroot[0m[2m=[0m0xf3cb6bc1d4165d33a345da482fe1b0b0399b8759f3b6c0914ba00ce6d194c51f
+[2m2025-12-30T10:57:13.042352Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 1 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m9 [3mtarget_slot[0m[2m=[0m10
+[2m2025-12-30T10:57:13.046848Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building block finished by Validator 0 [3mslot[0m[2m=[0m12 [3mblock_root[0m[2m=[0m0x60f705f1e6dc10c942bebda1ac3a710282575f747d8f708ba2477aa5528cb81b
+[2m2025-12-30T10:57:13.048548Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing block built by Validator 0 [3mslot[0m[2m=[0m12 [3mblock_root[0m[2m=[0m0x60f705f1e6dc10c942bebda1ac3a710282575f747d8f708ba2477aa5528cb81b
+[2m2025-12-30T10:57:13.052332Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Justification event [3mslot[0m[2m=[0m10 [3mroot[0m[2m=[0m0x85667895b7d27af9036ab1b09459e6fa88073f2f3b70625e4a618cf86a24c057
+[2m2025-12-30T10:57:13.052359Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Finalization event [3mslot[0m[2m=[0m9 [3mroot[0m[2m=[0m0xf3cb6bc1d4165d33a345da482fe1b0b0399b8759f3b6c0914ba00ce6d194c51f
+[2m2025-12-30T10:57:13.052370Z[0m [32m INFO[0m [2mream_consensus_lean::state[0m[2m:[0m Skipping vote by Validator 1 [3mreason[0m[2m=[0m"Target slot already justified" [3msource_slot[0m[2m=[0m9 [3mtarget_slot[0m[2m=[0m10
+[2m2025-12-30T10:57:13.086005Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish block failed [3mslot[0m[2m=[0m12 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:14.000991Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Starting vote phase: 4 validator(s) voting [3mslot[0m[2m=[0m12 [3mtick[0m[2m=[0m49
+[2m2025-12-30T10:57:14.009724Z[0m [32m INFO[0m [2mream_validator_lean::service[0m[2m:[0m Building vote template finished [3mslot[0m[2m=[0m12 [3mhead_slot[0m[2m=[0m12 [3msource_slot[0m[2m=[0m10 [3mtarget_slot[0m[2m=[0m11
+[2m2025-12-30T10:57:14.009914Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 0 [3mslot[0m[2m=[0m12 [3msource_slot[0m[2m=[0m10 [3mtarget_slot[0m[2m=[0m11
+[2m2025-12-30T10:57:14.010028Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 1 [3mslot[0m[2m=[0m12 [3msource_slot[0m[2m=[0m10 [3mtarget_slot[0m[2m=[0m11
+[2m2025-12-30T10:57:14.010103Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 2 [3mslot[0m[2m=[0m12 [3msource_slot[0m[2m=[0m10 [3mtarget_slot[0m[2m=[0m11
+[2m2025-12-30T10:57:14.010198Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Processing vote by Validator 3 [3mslot[0m[2m=[0m12 [3msource_slot[0m[2m=[0m10 [3mtarget_slot[0m[2m=[0m11
+[2m2025-12-30T10:57:14.010976Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m12 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:14.011512Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m12 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:14.012085Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m12 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:14.012608Z[0m [33m WARN[0m [2mream_p2p::network::lean[0m[2m:[0m Publish vote failed [3mslot[0m[2m=[0m12 [3merror[0m[2m=[0mInsufficientPeers
+[2m2025-12-30T10:57:15.000488Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Computing safe target [3mslot[0m[2m=[0m12 [3mtick[0m[2m=[0m50
+[2m2025-12-30T10:57:16.000697Z[0m [32m INFO[0m [2mream_chain_lean::service[0m[2m:[0m Accepting new votes [3mslot[0m[2m=[0m12 [3mtick[0m[2m=[0m51
