@@ -12,7 +12,7 @@ fn main() {
     let input = P::read_whole_input();
 
     // Deserialize LeanState first, then SignedBlock from the same byte slice
-    let mut cursor = std::io::Cursor::new(&input);
+    let mut cursor = std::io::Cursor::new(&input[..]);
     let mut state: LeanState =
         bincode::deserialize_from(&mut cursor).expect("failed to read LeanState");
     let new_block: SignedBlock =
